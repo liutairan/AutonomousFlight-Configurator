@@ -2,4 +2,4 @@
 
 # Sample:  
 Screenshot:
-![alt text](https://github.com/liutairan/AutonomousFlight-Configurator/blob/master/Pictures/Snip20180804_1.png "Sample image")
+![alt text](https://github.com/liutairan/AutonomousFlight-Configurator/blob/master/Pictures/Snip20180901_17.png "Sample image")
