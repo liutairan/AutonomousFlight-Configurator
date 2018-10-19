@@ -1,3 +1,34 @@
+#!/usr/bin/env python3
+
+'''
+    This file is part of AutonomousFlight Configurator.
+
+    AutonomousFlight Configurator is free software: you can
+    redistribute it and/or modify it under the terms of the
+    GNU General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your
+    option) any later version.
+
+    AutonomousFlight Configurator is distributed in the hope
+    that it will be useful, but WITHOUT ANY WARRANTY; without
+    even the implied warranty of MERCHANTABILITY or FITNESS
+    FOR A PARTICULAR PURPOSE.  See the GNU General Public
+    License for more details.
+
+    You should have received a copy of the GNU General Public
+    License along with AutonomousFlight Configurator. If not,
+    see <https://www.gnu.org/licenses/>.
+'''
+
+__author__ = "Tairan Liu"
+__copyright__ = "Copyright 2018, Tairan Liu"
+__credits__ = ["Tairan Liu", "Other Supporters"]
+__license__ = "GPLv3"
+__version__ = "0.0-dev"
+__maintainer__ = "Tairan Liu"
+__email__ = "liutairan2012@gmail.com"
+__status__ = "Development"
+
 import sys
 import os
 import string
@@ -108,10 +139,11 @@ class App(QMainWindow):
         self.infoTabsWidget.currentChanged.connect(self.setTabMode)
         # Init StatusBar
         self.statusBar = QStatusBar()
-        self.statusBarTopicList = ["Packet error:","I2C error:","Cycle Time:",
-                                   "CPU Load:","MSP Version:", "MSP Load:",
-                                   "MSP Roundtrip:","HW roundtrip:","Drop ratio:"]
-        self.packetInfoLabel = QLabel("|".join(self.statusBarTopicList))
+        # "Packet error:","I2C error:","Cycle Time:",
+        # "CPU Load:","MSP Version:", "MSP Load:",
+        # "MSP Roundtrip:","HW roundtrip:","Drop ratio:"
+        self.statusBarTopicList = ["Cycle Time:", "I2C error:", "CPU Load:", "MSP Version:"]
+        self.packetInfoLabel = QLabel(" | ".join(self.statusBarTopicList))
         self.statusBar.addWidget(self.packetInfoLabel)
         self.setStatusBar(self.statusBar)
         # self.statusBar.hide()
@@ -246,6 +278,30 @@ class App(QMainWindow):
             self.tabObjectDict["Overview"].updateGPSLabels()
         # Update header sensor lights.
         self.statusHeaderWidget.update(self.qsObj.msp_sensor_status)
+        # Update status bar
+        self.statusBarUpdate()
+
+    def statusBarUpdate(self):
+        self.statusBarTopicList = ["Cycle Time:", "I2C Error:", "CPU Load:", "MSP Version:"]
+        self.statusBarValueDict = {}
+        for field in self.statusBarTopicList:
+            data = None
+            if field == "Cycle Time:":
+                data = self.qsObj.msp_status_ex['cycleTime']
+            elif field == "I2C Error:":
+                data = self.qsObj.msp_status_ex['i2cError']
+            elif field == "CPU Load:":
+                data = self.qsObj.msp_status_ex['averageSystemLoadPercent']
+            elif field == "MSP Version:":
+                data = "1"
+            else:
+                pass
+            self.statusBarValueDict[field] = str(data)
+        labelString = "| "
+        for key,value in self.statusBarValueDict.items():
+            labelString = labelString + key + value + " | "
+        self.packetInfoLabel.setText(labelString)
+
 
     def sensorPageUpdate(self, ind):
         if ind == 0:
