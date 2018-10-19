@@ -1,0 +1,205 @@
+digraph G {
+    rankdir=LR;
+    subgraph cluster0 {
+      MainWindow_init -> MainWindow_initUI;
+      MainWindow_initUI -> MainWindow_centerWindow;
+      MainWindow_initUI -> MainWindow_initWidgets;
+      MainWindow_processInitConnection;
+      MainWindow_processStatusConnection;
+      MainWindow_initWorkingWidget;
+      MainWindow_setTabMode;
+      MainWindow_overviewPageUpdate;
+      MainWindow_sensorPageUpdate;
+      color = blue;
+      label = "MainWindow";
+    }
+
+    subgraph cluster1 {
+      InitHeaderWidget_init -> InitHeaderWidget_initUI;
+      InitHeaderWidget_connectionStatusChangedSignal;
+      color = blue;
+      label = "InitHeaderWidget";
+    }
+
+    subgraph cluster2 {
+      StatusHeaderWidget_init -> StatusHeaderWidget_initUI;
+      StatusHeaderWidget_connectionStatusChangedSignal;
+      color = blue;
+      label = "StatusHeaderWidget";
+    }
+
+    subgraph cluster3 {
+      MSPv1_init;
+      MSPv1_constructSendPacket;
+      MSPv1_sendPacket;
+      MSPv1_preCheckPacket;
+      MSPv1_parseReceivedPacket;
+      MSPv1_cliCommandSwitch;
+      MSPv1_overviewInfoResponse -> MSPv1_processOverviewCheck;
+      MSPv1_processModeRangesSave -> MSPv1_saveToEEPROM;
+      MSPv1_processParameterSettingSave -> MSPv1_saveToEEPROM;
+      MSPv1_processParameterSettingSave -> MSPv1_reboot;
+      MSPv1_processAccCalibrationRequest;
+      MSPv1_processMagCalibrationRequest;
+      MSPv1_processCalibrationSave -> MSPv1_saveToEEPROM;
+      MSPv1_processCalibrationSave -> MSPv1_reboot;
+      MSPv1_processSensorDataRequest -> MSPv1_sensorDataUpdateSignal;
+      MSPv1_processTopologySave;
+      MSPv1_cliFeedbackSignal;
+      MSPv1_calibrationFeedbackSignal;
+      MSPv1_processOverviewCheck -> MSPv1_overviewDataUpdateSignal;
+      MSPv1_processConfigureSave -> MSPv1_saveToEEPROM;
+      MSPv1_processConfigureSave -> MSPv1_reboot;
+      color = blue;
+      label = "MSPv1";
+    }
+
+    subgraph cluster4 {
+      CoverpageWidget_init;
+      color = blue;
+      label = "CoverpageWidget";
+    }
+
+    subgraph cluster5 {
+      CLIWidget_init;
+      CLIWidget_clisignal;
+      CLIWidget_processFeedback;
+      color = blue;
+      label = "CLIWidget";
+    }
+
+    subgraph cluster6 {
+      OverviewInfoWidget_init -> OverviewInfoWidget_setUpdateTimer;
+      OverviewInfoWidget_setUpdateTimer -> OverviewInfoWidget_QTimer;
+      OverviewInfoWidget_QTimer -> OverviewInfoWidget_dateRequest;
+      OverviewInfoWidget_dateRequest -> OverviewInfoWidget_overviewInfoSignal;
+      OverviewInfoWidget_updateAttitudeLabels;
+      OverviewInfoWidget_updateArmingFlagLabels;
+      OverviewInfoWidget_updateBatteryLabels;
+      OverviewInfoWidget_updateCommunicationLabels;
+      OverviewInfoWidget_updateGPSLabels;
+      color = blue;
+      label = "OverviewInfoWidget";
+    }
+
+    subgraph cluster7 {
+      CalibrationWidget_init -> CalibrationWidget_initUI;
+      CalibrationWidget_init -> CalibrationWidget_initValues;
+      CalibrationWidget_initValues -> CalibrationWidget_setUIValues;
+      CalibrationWidget_accCalibrationSignal;
+      CalibrationWidget_magCalibrationSignal;
+      CalibrationWidget_saveandreboot -> CalibrationWidget_getUIValues;
+      CalibrationWidget_saveandreboot -> CalibrationWidget_setQSObj;
+      CalibrationWidget_saveandreboot -> CalibrationWidget_calibrationSaveSignal;
+      CalibrationWidget_processFeedback -> CalibrationWidget_setValues;
+      CalibrationWidget_setValues -> CalibrationWidget_setUIValues;
+      color = blue;
+      label = "CalibrationWidget";
+    }
+
+    subgraph cluster8 {
+      ConfigureWidget_init -> ConfigureWidget_initUI;
+      ConfigureWidget_init -> ConfigureWidget_initValues;
+      ConfigureWidget_initValues -> ConfigureWidget_setUIValues;
+      ConfigureWidget_saveandreboot -> ConfigureWidget_getUIValues;
+      ConfigureWidget_saveandreboot -> ConfigureWidget_setQSObj;
+      ConfigureWidget_saveandreboot -> ConfigureWidget_configureSaveSignal;
+      ConfigureWidget_setValues -> ConfigureWidget_setUIValues;
+      color = blue;
+      label = "ConfigureWidget";
+    }
+
+    subgraph cluster9 {
+      ParameterSettingWidget_init -> ParameterSettingWidget_initUI;
+      ParameterSettingWidget_init -> ParameterSettingWidget_initValues;
+      ParameterSettingWidget_initValues -> ParameterSettingWidget_setUIValues;
+      ParameterSettingWidget_saveandreboot -> ParameterSettingWidget_getUIValues;
+      ParameterSettingWidget_saveandreboot -> ParameterSettingWidget_setQSObj;
+      ParameterSettingWidget_saveandreboot -> ParameterSettingWidget_parameterSaveSignal;
+      ParameterSettingWidget_setValues -> ParameterSettingWidget_setUIValues;
+      color = blue;
+      label = "ParameterSettingWidget";
+    }
+
+    subgraph cluster10 {
+      FlightModeWidget_init;
+      FlightModeWidget_flightmodeSaveSignal;
+      color = blue;
+      label = "FlightModeWidget";
+    }
+
+    subgraph cluster11 {
+      SensorWidget_init -> SensorWidget_setUpdateTimer;
+      SensorWidget_setUpdateTimer -> SensorWidget_QTimer;
+      SensorWidget_QTimer -> SensorWidget_dataRequest;
+      SensorWidget_dataRequest -> SensorWidget_sensorDataRequestSignal;
+      SensorWidget_updateACCPlot;
+      SensorWidget_updateGYROPlot;
+      SensorWidget_updateMAGPlot;
+      SensorWidget_updateBAROPlot;
+      color = blue;
+      label = "SensorWidget";
+    }
+
+    subgraph cluster12 {
+      TopologyWidget_init;
+      TopologyWidget_topologySaveSignal;
+      color = blue;
+      label = "TopologyWidget";
+    }
+
+    subgraph cluster13 {
+      BlackboxWidget_init;
+      color = blue;
+      label = "BlackboxWidget";
+    }
+
+    subgraph cluster14 {
+      SerialTerminalWidget_init;
+      color = blue;
+      label = "SerialTerminalWidget";
+    }
+
+    main -> MainWindow_init;
+    MainWindow_initWidgets -> InitHeaderWidget_init;
+    MainWindow_initWidgets -> CoverpageWidget_init;
+    InitHeaderWidget_connectionStatusChangedSignal -> MainWindow_processInitConnection;
+    MainWindow_processInitConnection -> MSPv1_init;
+    MainWindow_processInitConnection -> MainWindow_initWorkingWidget;
+    MainWindow_initWorkingWidget -> StatusHeaderWidget_init;
+    StatusHeaderWidget_connectionStatusChangedSignal -> MainWindow_processStatusConnection;
+    MainWindow_initWorkingWidget -> CLIWidget_init;
+    MainWindow_initWorkingWidget -> OverviewInfoWidget_init;
+    MainWindow_initWorkingWidget -> CalibrationWidget_init;
+    MainWindow_initWorkingWidget -> ConfigureWidget_init;
+    MainWindow_initWorkingWidget -> ParameterSettingWidget_init;
+    MainWindow_initWorkingWidget -> FlightModeWidget_init;
+    MainWindow_initWorkingWidget -> SensorWidget_init;
+    MainWindow_initWorkingWidget -> TopologyWidget_init;
+    MainWindow_initWorkingWidget -> BlackboxWidget_init;
+    MainWindow_initWorkingWidget -> SerialTerminalWidget_init;
+    CLIWidget_clisignal -> MSPv1_cliCommandSwitch;
+    FlightModeWidget_flightmodeSaveSignal -> MSPv1_processModeRangesSave;
+    ConfigureWidget_configureSaveSignal -> MSPv1_processConfigureSave;
+    ParameterSettingWidget_parameterSaveSignal -> MSPv1_processParameterSettingSave;
+    CalibrationWidget_accCalibrationSignal -> MSPv1_processAccCalibrationRequest;
+    CalibrationWidget_magCalibrationSignal -> MSPv1_processMagCalibrationRequest;
+    CalibrationWidget_calibrationSaveSignal -> MSPv1_processCalibrationSave;
+    SensorWidget_sensorDataRequestSignal -> MSPv1_processSensorDataRequest;
+    TopologyWidget_topologySaveSignal -> MSPv1_processTopologySave;
+    MSPv1_cliFeedbackSignal -> CLIWidget_processFeedback;
+    MSPv1_calibrationFeedbackSignal -> CalibrationWidget_processFeedback;
+    MSPv1_overviewDataUpdateSignal -> MainWindow_overviewPageUpdate;
+    MainWindow_overviewPageUpdate -> OverviewInfoWidget_updateAttitudeLabels;
+    MainWindow_overviewPageUpdate -> OverviewInfoWidget_updateArmingFlagLabels;
+    MainWindow_overviewPageUpdate -> OverviewInfoWidget_updateBatteryLabels;
+    MainWindow_overviewPageUpdate -> OverviewInfoWidget_updateCommunicationLabels;
+    MainWindow_overviewPageUpdate -> OverviewInfoWidget_updateGPSLabels;
+    MSPv1_sensorDataUpdateSignal -> MainWindow_sensorPageUpdate;
+    MainWindow_sensorPageUpdate -> SensorWidget_updateACCPlot;
+    MainWindow_sensorPageUpdate -> SensorWidget_updateGYROPlot;
+    MainWindow_sensorPageUpdate -> SensorWidget_updateMAGPlot;
+    MainWindow_sensorPageUpdate -> SensorWidget_updateBAROPlot;
+    OverviewInfoWidget_overviewInfoSignal -> MSPv1_overviewInfoResponse;
+    # Save
+}
