@@ -1,0 +1,236 @@
+{
+    "Calibration": {
+        "Acc Calibration Axis Flags": 0,
+        "Acc X zero": 0,
+        "Acc Y zero": 0,
+        "Acc Z zero": 0,
+        "Acc X gain": 4096,
+        "Acc Y gain": 4096,
+        "Acc Z gain": 4096,
+        "Mag X zero": 0,
+        "Mag Y zero": 0,
+        "Mag Z zero": 0
+    },
+    "Topology": {
+        "Address Head": "0013A200",
+        "Address Options": ["40C14304", "40C14306", "40C1430B"],
+        "Current Telemetry Address": 0,
+        "Telemetry Source Type Options": ["Single", "Double", "Multiple"],
+        "Telemetry Source Type": 0,
+        "Telemetry Source Address": [0, 1, 2],
+        "Telemetry Destination Type Options": ["Single", "Double", "Broadcast"],
+        "Telemetry Destination Type": 0,
+        "Telemetry Destination Address": [0, 1, 2],
+        "Current Remote Control Address": 0,
+        "Remote Control Source Address": 0
+    },
+    "Port": {
+        "Baudrate": ["AUTO", "1200", "2400", "4800", "9600", "19200", "38400", "57600", "115200"],
+        "Telemetry": ["Disabled", "IBUS", "MAVLink", "LTM", "SmartPort", "HoTT", "FrSky"],
+        "Sensor": ["Disabled", "GPS"],
+        "Peripherals": ["Disabled", "Blackbox", "RunCam Device", "TBS SmartAudio", "IRC Tramp"],
+        "FunctionMask": {"NONE":0, "MSP":1, "GPS":2, "TELEMETRY_FRSKY":4, "TELEMETRY_HOTT":8,
+                         "TELEMETRY_LTM":16, "TELEMETRY_SMARTPORT":32, "RX_SERIAL":64,
+                         "BLACKBOX":128, "TELEMETRY_MAVLINK":256, "TELEMETRY_IBUS":512,
+                         "RCDEVICE":1024, "VTX_SMARTAUDIO":2048, "VTX_TRAMP":4096,
+                         "UAV_INTERCONNECT":8192, "OPTICAL_FLOW":16384, "DEBUG_TRACE":32768},
+        "0": [1, 8, 6, 0, 8],
+        "1": [0, 8, 8, 0, 8],
+        "2": [0, 8, 6, 0, 8]
+    },
+    "Mixer": {
+        "Mixer": 0,
+        "Mixer Options": ["Not configured", "Tricopter", "Quad +", "Quad X", "Bicopter", "Gimbal", "Y6", "Hex +", "Flying Wing", "Y4", "Hex X", "Octo X8", "Octo Flat +", "Octo Flat X", "Airplane", "Heli 120", "Heli 90", ""]
+    },
+    "Sensors": {
+        "Accelerometer": 0,
+        "Accelerometer Options": ["NONE", "AUTO", "ADXL345", "MPU6050", "MMA845x", "BMA280", "LSM303DLHC", "MPU6000", "MPU6500", "MPU9250", "BMI160", "FAKE"],
+        "Magnetometer": 0,
+        "Magnetometer Options": ["NONE", "AUTO", "HMC5883", "AK8975", "GPSMAG", "MAG3110", "AK8963", "IST8310", "QMC5883", "MPU9250", "IST8308", "LIS3MDL", "FAKE"],
+        "Barometer": 0,
+        "Barometer Options": ["NONE", "AUTO", "BMP085", "MS5611", "BMP280", "MS5607", "FAKE"],
+        "Pitot tube": 0,
+        "Pitot tube Options": ["NONE", "AUTO", "MS4525", "ADC", "VIRTUAL", "FAKE"],
+        "Rangefinder": 0,
+        "Rangefinder Options": ["NONE", "HCSR04", "SRF10", "HCSR04I2C", "VL53L0X", "UIB"],
+        "Optical Flow": 0,
+        "Optical Flow Options": ["NONE", "PMW3901", "CXOF", "MSP", "FAKE"]
+    },
+    "Board and Sensor Alignment": {
+        "Roll degrees": 0.0,
+        "Pitch degrees": 0.0,
+        "Yaw degrees": 0.0,
+        "Gyro alignment": 0,
+        "Gyro alignment Options": ["Default", "CW 0", "CW 90", "CW 180", "CW 270", "CW 0 flip", "CW 90 flip", "CW 180 flip", "CW 270 flip"],
+        "Acc alignment": 0,
+        "Acc alignment Options": ["Default", "CW 0", "CW 90", "CW 180", "CW 270", "CW 0 flip", "CW 90 flip", "CW 180 flip", "CW 270 flip"],
+        "Mag alignment": 0,
+        "Mag alignment Options": ["Default", "CW 0", "CW 90", "CW 180", "CW 270", "CW 0 flip", "CW 90 flip", "CW 180 flip", "CW 270 flip"]
+    },
+    "Receiver Mode": {
+        "Receiver Mode": 0,
+        "Receiver Mode Options": ["No receiver",
+                                  "PWM RX input (one wire per channel)",
+                                  "PPM RX input",
+                                  "Serial-based receiver (SPEKSAT, SBUS, SUMD)",
+                                  "MSP RX input (control via MSP port)",
+                                  "RX SPI based receiver (NRF24L01, RFM22)"
+                                  ]
+    },
+    "GPS": {
+        "GPS for navigation and telemetry": false,
+        "Protocol": 0,
+        "Protocol Options": ["NMEA", "UBLOX", "I2C-NAV", "DJI NAZA", "UBLOX7", "MTK"],
+        "Ground Assistance Type": 0,
+        "Ground Assistance Type Options": ["Autodetect", "European EGNOS", "North American WAAS", "Japanese MSAS", "Indian GAGAN", "Disabled"],
+        "Magnetometer Declination": 0.0
+    },
+    "3D": {
+        "3D Deadband Low": 1406,
+        "3D Deadband High": 1514,
+        "3D Neutral": 1460
+    },
+    "Personalization": {
+        "Craft Name": "Of Course"
+    },
+    "ESC/Motor Features": {
+        "Enable motor and servo output": false,
+        "ESC protocol": 0,
+        "ESC protocol Options": ["STANDARD", "ONESHOT125", "ONESHOT42", "MULTISHOT", "BRUSHED"],
+        "ESC refresh rate": 1,
+        "ESC refresh rate default Options": {"STANDARD": "400Hz", "ONESHOT125": "1kHz", "ONESHOT42": "2kHz", "MULTISHOT": "2kHz", "BRUSHED": "8kHz"},
+        "ESC refresh rate Options": {"STANDARD": ["50Hz", "400Hz"], "ONESHOT125": ["400Hz", "1kHz", "2kHz"], "ONESHOT42": ["400Hz", "1kHz", "2kHz", "4kHz", "8kHz"], "MULTISHOT": ["400Hz", "1kHz", "2kHz", "4kHz", "8kHz"], "BRUSHED": ["8kHz", "16kHz", "32kHz"]},
+        "Servo refresh rate": 0,
+        "Servo refresh rate Options": ["50Hz", "60Hz", "100Hz", "160Hz", "330Hz"],
+        "Do not spin the motors when armed": false,
+        "Min throttle": 1150,
+        "Mid throttle": 1500,
+        "Max throttle": 1850,
+        "Min command": 1000
+    },
+    "System Configuration": {
+        "Gyroscope LPF cutoff frequency": 3,
+        "Gyroscope LPF cutoff frequency Options": ["256Hz", "188Hz", "98Hz", "42Hz", "20Hz", "10Hz"],
+        "Asynchronous mode": 0,
+        "Asynchronous mode Options": ["Disabled", "Gyro", "All"],
+        "Synchronize looptime with gyroscope": false,
+        "Flight controller loop time": 0,
+        "Flight controller loop time Options": ["1kHz", "500Hz", "250Hz"]
+    },
+    "Battery Voltage": {
+        "Battery voltage monitoring": false,
+        "Min cell voltage": 0,
+        "Max cell voltage": 0,
+        "Warning cell voltage": 0,
+        "Voltage scale": 0,
+        "Battery voltage": 0
+    },
+    "Current Sensor": {
+        "Battery current monitoring": false,
+        "Scale the output voltage to milliamps": 0,
+        "Offset in millivolt steps": 0,
+        "Battery current": 0
+    },
+    "Battery Capacity": {
+        "Unit": 0,
+        "Unit Options": ["mAh", "mWh"],
+        "Capacity": 0,
+        "Warning capacity": 0,
+        "Critical capacity": 0
+    },
+    "Failsafe": {
+        "Min length": 800,
+        "Max length": 2200,
+        "Failsafe kill switch": false,
+        "Guard time": 0,
+        "Failsafe throttle low delay": 0,
+        "Procedure": 1,
+        "Procedure Options": ["Land", "Drop", "RTH", "Do nothing"],
+        "Throttle value while landing": 1100,
+        "Delay for turning off the motors during failsafe": 0,
+        "Use alternate min distance failsafe procedure": false,
+        "Failsafe min distance": 0,
+        "Failsafe min distance procedure": 1,
+        "Failsafe min distance procedure Options": ["Land", "Drop", "RTH", "Do nothing"]
+    },
+    "Other Features": {
+        "Mask": 0
+    },
+    "PID Tuning": {
+        "Roll": {"P":40, "I":30, "D":23},
+        "Pitch": {"P":40, "I":30, "D":23},
+        "Yaw": {"P":85, "I":45, "D":0},
+        "Position Z": {"P":50, "I":0, "D":0},
+        "Velocity Z": {"P":100, "I":50, "D":10},
+        "Heading": {"P":60, "I":0, "D":0},
+        "Position XY": {"P":65, "I":120, "D":10},
+        "Velocity XY": {"P":40, "I":15, "D":100},
+        "Surface": {"P":0, "I":0, "D":0},
+        "Level": {"Strength":20, "LPF cutoff": 15, "Transition": 75},
+        "Roll rate": 200,
+        "Pitch rate": 200,
+        "Yaw rate": 200,
+        "Manual Roll rate": 100,
+        "Manual Pitch rate": 100,
+        "Manual Yaw rate": 100,
+        "MagHold rate": 90
+    },
+    "Filtering": {
+        "Gyro LPF cutoff frequency": 60,
+        "Accelerometer LPF cutoff frequency": 15,
+        "First gyro notch filter frequency": 0,
+        "First gyro notch filter cutoff frequency": 1,
+        "Second gyro notch filter frequency": 0,
+        "Second gyro notch filter cutoff frequency": 1,
+        "D-term LPF cutoff frequency": 40,
+        "Yaw LPF cutoff frequency": 30,
+        "D-term notch filter frequency": 0,
+        "D-term notch filter cutoff frequency": 1
+    },
+    "Miscellaneous": {
+        "Yaw jump prevention": 200,
+        "Yaw P limit": 300,
+        "Roll/Pitch I-term ignore rate": 200,
+        "Yaw I-term ignore rate": 50,
+        "Roll/Pitch acceleration limit": 0,
+        "Yaw acceleration limit": 10000,
+        "TPA": 0,
+        "TPA Breakpoint": 1500
+    },
+    "Basic Nav Settings": {
+        "User Control Mode": 0,
+        "User Control Mode Options": ["Attitude", "Cruise"],
+        "Max navigation speed": 300,
+        "Max cruise speed": 500,
+        "Max navigation climb rate": 500,
+        "Max ALTHOLD climb rate": 200,
+        "Multirotor max banking angle": 30,
+        "Use mid throttle for ALTHOLD": false,
+        "Hover throttle": 1500
+    },
+    "RTH and Landing Settings": {
+        "RTH Altitude Mode": 4,
+        "RTH Altitude Mode Options": ["Current", "Extra", "Fixed", "Max", "At Least"],
+        "RTH Altitude": 1000,
+        "Climb before RTH": true,
+        "Climb regardless of position sensor health": false,
+        "Tail first": false,
+        "Land after RTH": 1,
+        "Land after RTH Options": ["Never", "Always", "Only on failsafe"],
+        "Landing vertical speed": 200,
+        "Min vertical landing speed at altitude": 500,
+        "Vertical landing speed slowdown at altitude": 2000,
+        "Min RTH distance": 500,
+        "RTH abort threshold": 50000,
+        "Emergency landing speed": 500
+    },
+    "Position Estimator": {
+        "Vertical Position Baro Weight": 0.35,
+        "Vertical Position GPS Weight": 0.2,
+        "Vertical Speed GPS Weight": 0.5,
+        "Horizontal Position GPS Weight": 1.00,
+        "Horizontal Speed GPS Weight": 2.00,
+        "Min GPS sats for valid fix": 6,
+        "Use GPS data for velocity calculation": true
+    }
+}
