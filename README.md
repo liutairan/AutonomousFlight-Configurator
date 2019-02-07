@@ -1,6 +1,6 @@
 # AutonomousFlight-Configurator  
 
-Project finished. Upload after fully tested.
+Project finished. It will be uploaded after fully tested.
 
 # Sample:  
 Screenshot:
