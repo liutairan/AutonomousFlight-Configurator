@@ -31,6 +31,7 @@ __status__ = "Development"
 
 import sys
 import os
+import time
 import string
 import math
 from random import *
@@ -41,9 +42,9 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
     QCompleter, QSizePolicy, QComboBox, QMessageBox, QDialog, QDialogButtonBox,
     QFileDialog, QStatusBar, QTabWidget, QFormLayout, QRadioButton)
 from PyQt5.QtGui import QIcon, QPainter
-from PyQt5.QtCore import pyqtSlot, pyqtSignal, QStringListModel, QRect, QSize, Qt
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QStringListModel, QRect, QSize, Qt, QTimer
 
-from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
 
 from HeaderWidget import InitHeaderWidget, StatusHeaderWidget
 from CoverPageWidget import CoverPageWidget
@@ -159,6 +160,8 @@ class App(QMainWindow):
             self.qsObj = QuadStates()
             self.mspHandle = MSPv1(self.serialPort, self.qsObj)
             result = self.mspHandle.preCheck()
+            # Respond to reboot command from MSPv1
+            self.mspHandle.rebootSignal.connect(self.reboot)
         except:
             print("Fail to open serial port.")
         if result:
@@ -177,12 +180,15 @@ class App(QMainWindow):
             self.tabObjectDict["Calibration"].calibrationSaveSignal.connect(self.mspHandle.processCalibrationSave)
             self.tabObjectDict["Sensor"].sensorDataRequestSignal.connect(self.mspHandle.processSensorDataRequest)
             self.tabObjectDict["Topology"].topologySaveSignal.connect(self.mspHandle.processTopologySave)
+            self.tabObjectDict["SerialTerminal"].serTerSignal.connect(self.mspHandle.processSerialTerminalRequest)
 
             # MSP data changed will raise this signal to update labels in UI page
             self.mspHandle.cliFeedbackSignal.connect(self.tabObjectDict["CLI"].processFeedback)
             self.mspHandle.calibrationFeedbackSignal.connect(self.tabObjectDict["Calibration"].processFeedback)
             self.mspHandle.overviewDataUpdateSignal.connect(self.overviewPageUpdate)
             self.mspHandle.sensorDataUpdateSignal.connect(self.sensorPageUpdate)
+            self.mspHandle.serTerFeedbackSignal.connect(self.tabObjectDict["SerialTerminal"].processFeedback)
+
             # Change UI
             self.initHeaderWidget.hide()
             self.coverPageWidget.hide()
@@ -223,6 +229,19 @@ class App(QMainWindow):
         print("---Debug---")
         pass
 
+    # Process reboot
+    def reboot(self):
+        # Step 1: Close current connection
+        self.processStatusConnection()
+        # Step 2: Wait for 0.3 seconds
+        self.waitTimer = QTimer()
+        self.waitTimer.setInterval(300)
+        self.waitTimer.setSingleShot(True)
+
+        # Step 3: Reconnect
+        self.waitTimer.timeout.connect(self.processInitConnection)
+        self.waitTimer.start(300)
+
     # Page index
     # Change corresponding index if the tabObjectDict is changed.
     def setTabMode(self, index):
@@ -255,6 +274,12 @@ class App(QMainWindow):
             if index == 8:
                 # Blackbox
                 pass
+            if index == 9:
+                # Serial Terminal
+                self.tabObjectDict["SerialTerminal"].start()
+            elif self.currentTabMode == 9:
+                self.tabObjectDict["SerialTerminal"].stop()
+
             self.currentTabMode = index
 
     def startSerialPort(self):
