@@ -37,7 +37,7 @@ import re
 import subprocess
 import threading
 from functools import partial
-from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
 from random import *
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
     QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QAction,
@@ -50,6 +50,10 @@ from PyQt5.QtGui import QPixmap, QFont, QIcon
 from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt, QSize
 
 from SettingFileIO import *
+
+# Some variables have decimals, these variables will be transmitted by times 10^n.
+# When from qsObj.msp_some_field to userSettingData, divide by 10;
+# when from userSettingData to qsObj.msp_some_field, time by 10.
 
 class ConfigureWidget(QWidget):
     configureSaveSignal = pyqtSignal(list)
@@ -465,9 +469,15 @@ class ConfigureWidget(QWidget):
         if self.userSettingData['Failsafe']['Use alternate min distance failsafe procedure'] == True:
             self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home switch'] = True
             self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home'].setIcon(QIcon(self.switchONImage))
+            self.failsafeSettings['Failsafe min distance'].setEnabled(True)
+            self.failsafeSettings['Failsafe min distance procedure'].setEnabled(True)
         elif self.userSettingData['Failsafe']['Use alternate min distance failsafe procedure'] == False:
             self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home switch'] = False
             self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home'].setIcon(QIcon(self.switchOFFImage))
+            self.failsafeSettings['Failsafe min distance'].setDisabled(True)
+            self.failsafeSettings['Failsafe min distance procedure'].setDisabled(True)
+        else:
+            pass
         self.failsafeSettings['Failsafe min distance'].setValue(self.userSettingData['Failsafe']['Failsafe min distance'])
         self.failsafeSettings['Failsafe min distance procedure'].clear()
         self.failsafeSettings['Failsafe min distance procedure'].addItems(self.userSettingData['Failsafe']['Failsafe min distance procedure Options'])
@@ -1025,7 +1035,11 @@ class ConfigureWidget(QWidget):
     def setQSObj(self):
         # userSettingData->qsObj
         # Port
-        self.qsObj.msp_cf_serial_config = [0, self.userSettingData['Port']["0"], 1, self.userSettingData['Port']["1"], 2, self.userSettingData['Port']["2"]]
+        self.qsObj.msp_cf_serial_config = []
+        self.qsObj.msp_cf_serial_config = self.qsObj.msp_cf_serial_config + [0] + self.userSettingData['Port']["0"]
+        self.qsObj.msp_cf_serial_config = self.qsObj.msp_cf_serial_config + [1] + self.userSettingData['Port']["1"]
+        self.qsObj.msp_cf_serial_config = self.qsObj.msp_cf_serial_config + [2] + self.userSettingData['Port']["2"]
+
         # Mixer
         self.qsObj.msp_mixer['mixer_mode'] = self.userSettingData['Mixer']['Mixer']
 
@@ -1038,12 +1052,13 @@ class ConfigureWidget(QWidget):
         self.qsObj.msp_sensor_config['opflow'] = self.userSettingData['Sensors']['Optical Flow']
 
         # Board and sensor alignment
-        self.qsObj.msp_board_alignment['roll_deci_degrees'] = self.userSettingData['Board and Sensor Alignment']['Roll degrees']
-        self.qsObj.msp_board_alignment['pitch_deci_degrees'] = self.userSettingData['Board and Sensor Alignment']['Pitch degrees']
-        self.qsObj.msp_board_alignment['yaw_deci_degrees'] = self.userSettingData['Board and Sensor Alignment']['Yaw degrees']
+        self.qsObj.msp_board_alignment['roll_deci_degrees'] = int(self.userSettingData['Board and Sensor Alignment']['Roll degrees']*10)
+        self.qsObj.msp_board_alignment['pitch_deci_degrees'] = int(self.userSettingData['Board and Sensor Alignment']['Pitch degrees']*10)
+        self.qsObj.msp_board_alignment['yaw_deci_degrees'] = int(self.userSettingData['Board and Sensor Alignment']['Yaw degrees']*10)
         self.qsObj.msp_sensor_alignment['gyro_align'] = self.userSettingData['Board and Sensor Alignment']['Gyro alignment']
         self.qsObj.msp_sensor_alignment['acc_align'] = self.userSettingData['Board and Sensor Alignment']['Acc alignment']
         self.qsObj.msp_sensor_alignment['mag_align'] = self.userSettingData['Board and Sensor Alignment']['Mag alignment']
+
         # Receiver mode
         self.qsObj.msp_rx_config['receiver_type'] = self.userSettingData['Receiver Mode']['Receiver Mode']
         # print(self.qsObj.msp_rx_config)
@@ -1052,7 +1067,7 @@ class ConfigureWidget(QWidget):
         # To qsObj msp_misc
         self.qsObj.msp_misc['gps_provider'] = self.userSettingData['GPS']['Protocol']
         self.qsObj.msp_misc['gps_sbas_mode'] = self.userSettingData['GPS']['Ground Assistance Type']
-        self.qsObj.msp_misc['mag_declination'] = self.userSettingData['GPS']['Magnetometer Declination']
+        self.qsObj.msp_misc['mag_declination'] = int(self.userSettingData['GPS']['Magnetometer Declination']*10)
 
         # 3D
         # To qsObj msp_3d
@@ -1085,7 +1100,15 @@ class ConfigureWidget(QWidget):
             self.qsObj.msp_advanced_config['gyro_sync'] = 1
         elif self.userSettingData['System Configuration']['Synchronize looptime with gyroscope'] == False:
             self.qsObj.msp_advanced_config['gyro_sync'] = 0
-        self.qsObj.msp_loop_time['looptime'] = self.userSettingData['System Configuration']['Flight controller loop time']
+        msp_loop_time_index = self.userSettingData['System Configuration']['Flight controller loop time']
+        if msp_loop_time_index == 0:
+            self.qsObj.msp_loop_time['looptime'] = 1000
+        elif msp_loop_time_index == 1:
+            self.qsObj.msp_loop_time['looptime'] = 500
+        elif msp_loop_time_index == 2:
+            self.qsObj.msp_loop_time['looptime'] = 250
+        else:
+            pass
 
         # Battery Voltage
         # To qsObj msp_misc and msp_analog
@@ -1254,16 +1277,22 @@ class ConfigureWidget(QWidget):
 
         self.boardAlignmentSettings['Roll degrees'] = QDoubleSpinBox(self)
         self.boardAlignmentSettings['Roll degrees'].setDecimals(1)
+        self.boardAlignmentSettings['Roll degrees'].setSingleStep(0.1)
+        self.boardAlignmentSettings['Roll degrees'].setRange(-180.0, 180.0)
         self.boardAlignmentSettings['Roll degrees'].setStyleSheet("QSpinBox {max-width:40}")
         self.boardAlignmentGroupBoxLayout.addWidget(self.boardAlignmentSettings['Roll degrees'], 0, 1, 1, 1)
 
         self.boardAlignmentSettings['Pitch degrees'] = QDoubleSpinBox(self)
         self.boardAlignmentSettings['Pitch degrees'].setDecimals(1)
+        self.boardAlignmentSettings['Pitch degrees'].setSingleStep(0.1)
+        self.boardAlignmentSettings['Pitch degrees'].setRange(-180.0, 180.0)
         self.boardAlignmentSettings['Pitch degrees'].setStyleSheet("QSpinBox {max-width:40}")
         self.boardAlignmentGroupBoxLayout.addWidget(self.boardAlignmentSettings['Pitch degrees'], 1, 1, 1, 1)
 
         self.boardAlignmentSettings['Yaw degrees'] = QDoubleSpinBox(self)
         self.boardAlignmentSettings['Yaw degrees'].setDecimals(1)
+        self.boardAlignmentSettings['Yaw degrees'].setSingleStep(0.1)
+        self.boardAlignmentSettings['Yaw degrees'].setRange(-180.0, 180.0)
         self.boardAlignmentSettings['Yaw degrees'].setStyleSheet("QSpinBox {max-width:40}")
         self.boardAlignmentGroupBoxLayout.addWidget(self.boardAlignmentSettings['Yaw degrees'], 2, 1, 1, 1)
 
@@ -1306,6 +1335,8 @@ class ConfigureWidget(QWidget):
 
         self.gpsSettings['Magnetometer Declination'] = QDoubleSpinBox(self)
         self.gpsSettings['Magnetometer Declination'].setDecimals(1)
+        self.gpsSettings['Magnetometer Declination'].setSingleStep(0.1)
+        self.gpsSettings['Magnetometer Declination'].setRange(-180.0, 180.0)
         self.gpsGroupBoxLayout.addWidget(self.gpsSettings['Magnetometer Declination'], 3, 0, 1, 1)
         self.gpsGroupBoxLayout.addWidget(QLabel("Magnetometer \nDeclination [deg]"), 3, 1, 1, 1)
 
@@ -1328,7 +1359,7 @@ class ConfigureWidget(QWidget):
         self.craftNameLineEdit = QLineEdit(self)
         self.craftNameLineEdit.setStyleSheet("QLineEdit {max-width:180}")
         self.nameGroupBoxLayout.addWidget(self.craftNameLineEdit, 0, 0, 1, 1)
-        self.nameGroupBoxLayout.addWidget(QLabel("Craft Name"), 0, 1, 1, 1)
+        self.nameGroupBoxLayout.addWidget(QLabel("Craft Name (Max 16 characters)"), 0, 1, 1, 1)
 
     def otherFeatureGroupBoxInit(self):
         featureList = ["Servo gimbal",
@@ -1664,10 +1695,14 @@ class ConfigureWidget(QWidget):
         if self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home switch'] == False:
             self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home'].setIcon(QIcon(self.switchONImage))
             self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home switch'] = True
+            self.failsafeSettings['Failsafe min distance'].setEnabled(True)
+            self.failsafeSettings['Failsafe min distance procedure'].setEnabled(True)
             self.failsafeSettings['Failsafe min distance'].setValue(2000)
         elif self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home switch'] == True:
             self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home'].setIcon(QIcon(self.switchOFFImage))
             self.failsafeSettings['Use alternate Minimum Distance failsafe procedure when close to home switch'] = False
+            self.failsafeSettings['Failsafe min distance'].setDisabled(True)
+            self.failsafeSettings['Failsafe min distance procedure'].setDisabled(True)
             self.failsafeSettings['Failsafe min distance'].setValue(0)
         # if use alternate min distance switch is on, then set the min distance
         #    to 2000 cm automatically; if it is turned off, then set it to 0.
@@ -1710,9 +1745,9 @@ class ConfigureWidget(QWidget):
 
         # Board and sensor alignment
         # From qsObj msp_board_alignment and msp_sensor_alignment
-        self.userSettingData['Board and Sensor Alignment']['Roll degrees'] = self.qsObj.msp_board_alignment['roll_deci_degrees']
-        self.userSettingData['Board and Sensor Alignment']['Pitch degrees'] = self.qsObj.msp_board_alignment['pitch_deci_degrees']
-        self.userSettingData['Board and Sensor Alignment']['Yaw degrees'] = self.qsObj.msp_board_alignment['yaw_deci_degrees']
+        self.userSettingData['Board and Sensor Alignment']['Roll degrees'] = float(self.qsObj.msp_board_alignment['roll_deci_degrees'])/10.0
+        self.userSettingData['Board and Sensor Alignment']['Pitch degrees'] = float(self.qsObj.msp_board_alignment['pitch_deci_degrees'])/10.0
+        self.userSettingData['Board and Sensor Alignment']['Yaw degrees'] = float(self.qsObj.msp_board_alignment['yaw_deci_degrees'])/10.0
         self.userSettingData['Board and Sensor Alignment']['Gyro alignment'] = self.qsObj.msp_sensor_alignment['gyro_align']
         self.userSettingData['Board and Sensor Alignment']['Acc alignment'] = self.qsObj.msp_sensor_alignment['acc_align']
         self.userSettingData['Board and Sensor Alignment']['Mag alignment'] = self.qsObj.msp_sensor_alignment['mag_align']
@@ -1730,7 +1765,7 @@ class ConfigureWidget(QWidget):
             self.userSettingData['GPS']['GPS for navigation and telemetry'] = False
         self.userSettingData['GPS']['Protocol'] = self.qsObj.msp_misc['gps_provider']
         self.userSettingData['GPS']['Ground Assistance Type'] = self.qsObj.msp_misc['gps_sbas_mode']
-        self.userSettingData['GPS']['Magnetometer Declination'] = self.qsObj.msp_misc['mag_declination']
+        self.userSettingData['GPS']['Magnetometer Declination'] = float(self.qsObj.msp_misc['mag_declination'])/10.0
 
         # 3D
         # From qsObj msp_3d
@@ -1769,7 +1804,15 @@ class ConfigureWidget(QWidget):
             self.userSettingData['System Configuration']['Synchronize looptime with gyroscope'] = True
         elif self.qsObj.msp_advanced_config['gyro_sync'] == 0:
             self.userSettingData['System Configuration']['Synchronize looptime with gyroscope'] = False
-        self.userSettingData['System Configuration']['Flight controller loop time'] = self.qsObj.msp_loop_time['looptime']
+        msp_loop_time_value = self.qsObj.msp_loop_time['looptime']
+        if msp_loop_time_value == 1000:
+            self.userSettingData['System Configuration']['Flight controller loop time'] = 0
+        elif msp_loop_time_value == 500:
+            self.userSettingData['System Configuration']['Flight controller loop time'] = 1
+        elif msp_loop_time_value == 250:
+            self.userSettingData['System Configuration']['Flight controller loop time'] = 2
+        else:
+            pass
 
         # Battery Voltage
         # From qsObj msp_misc and msp_analog
