@@ -131,10 +131,12 @@ class CoverPageWidget(QWidget):
         flashTitleLabel.setStyleSheet("QLabel {color:white;}")
         flashGroupBoxLayout.addWidget(flashTitleLabel)
 
-        chooseBoardTypeComboBox = QComboBox()
-        flashGroupBoxLayout.addWidget(chooseBoardTypeComboBox)
-        chooseFirmwareVersionComboBox = QComboBox()
-        flashGroupBoxLayout.addWidget(chooseFirmwareVersionComboBox)
+        self.chooseBoardTypeComboBox = QComboBox()
+        flashGroupBoxLayout.addWidget(self.chooseBoardTypeComboBox)
+        self.loadBoardNames()
+        self.chooseFirmwareVersionComboBox = QComboBox()
+        flashGroupBoxLayout.addWidget(self.chooseFirmwareVersionComboBox)
+        self.loadFirmwareVersions()
 
         wirelessLabel = QLabel("Wireless Mode")
         wirelessLabel.setStyleSheet("QLabel {background-color:white; border: none;}")
@@ -223,6 +225,18 @@ class CoverPageWidget(QWidget):
 
     def connectionResp(self):
         self.connectionStatusChangedSignal.emit()
+
+    def loadBoardNames(self):
+        boardList = ["Serious Pro Racing F3", "Serious Pro Racing F4"]
+        self.chooseBoardTypeComboBox.clear()
+        self.chooseBoardTypeComboBox.addItems(boardList)
+        self.chooseBoardTypeComboBox.setCurrentIndex(0)
+
+    def loadFirmwareVersions(self):
+        versionList = ["AutonomousFlight 1.9.3", "AutonomousFlight 2.0.1", "iNavFlight 1.9.1", "iNavFlight 2.0.0"]
+        self.chooseFirmwareVersionComboBox.clear()
+        self.chooseFirmwareVersionComboBox.addItems(versionList)
+        self.chooseFirmwareVersionComboBox.setCurrentIndex(1)
 
     def rebootSequenceToggleButtonClicked(self):
         if self.rebootSequenceToggleButton.text() == "OFF":
