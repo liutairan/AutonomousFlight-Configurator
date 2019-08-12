@@ -36,9 +36,6 @@ import threading
 from PyQt5.QtCore import QObject, pyqtSignal
 from QuadStates import QuadStates
 
-from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.schedulers.blocking import BlockingScheduler
-
 class MSPv1(QObject):
     # MSPv1 MSP Commands
     MSP_PROTOCOL_VERSION = 0
@@ -176,6 +173,27 @@ class MSPv1(QObject):
     MSP_SET_TX_INFO = 186 # in message           Used to send runtime information from TX lua scripts to the firmware
     MSP_TX_INFO = 187 # out message          Used by TX lua scripts to read information from the firmware
 
+    # XBEE Settings 130-149, 230-238
+    MSP_XBEE_SELF_TELEMETRY_ADDR = 130
+    MSP_SET_XBEE_SELF_TELEMETRY_ADDR = 230
+
+    MSP_XBEE_TELEMETRY_SOURCE_ADDR = 131
+    MSP_SET_XBEE_TELEMETRY_SOURCE_ADDR = 231
+
+    MSP_XBEE_TELEMETRY_DESTINATION_ADDR = 132
+    MSP_SET_XBEE_TELEMETRY_DESTINATION_ADDR = 232
+
+    MSP_XBEE_SELF_RC_ADDR = 133
+    MSP_SET_XBEE_SELF_RC_ADDR = 233
+
+    MSP_XBEE_RC_SOURCE_ADDR = 134
+    MSP_SET_XBEE_RC_SOURCE_ADDR = 234
+
+    MSP_FORMATION_CONFIG = 135
+    MSP_SET_FORMATION_CONFIG = 235
+
+    MSP_NETWORK_CONFIG = 136
+    MSP_SET_NETWORK_CONFIG = 236
 
     MSP_IDENT = 100
     MSP_STATUS = 101
@@ -253,6 +271,8 @@ class MSPv1(QObject):
     calibrationFeedbackSignal = pyqtSignal()
     overviewDataUpdateSignal = pyqtSignal(int)
     sensorDataUpdateSignal = pyqtSignal(int)
+    rebootSignal = pyqtSignal()
+    serTerFeedbackSignal = pyqtSignal(str)
 
     """Class initialization"""
     def __init__(self, serialHandle, qsObj):
@@ -354,6 +374,456 @@ class MSPv1(QObject):
                     for i in range(3,len(total_data)):
                         tempList.append(total_data[i])
                     tempData = struct.pack('<3c2B9hB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_CF_SERIAL_CONFIG:
+                byteStr = struct.pack('<2BBH4BBH4BBH4B', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BBH4BBH4BBH4BB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_MIXER:
+                byteStr = struct.pack('<2BB', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BBB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_ARMING_CONFIG:
+                byteStr = struct.pack('<2B2B', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B2BB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_LOOP_TIME:
+                byteStr = struct.pack('<2Bh', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BhB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_BOARD_ALIGNMENT:
+                byteStr = struct.pack('<2B3h', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B3hB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_SENSOR_ALIGNMENT:
+                byteStr = struct.pack('<2B3B', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B3BB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_RX_CONFIG:
+                byteStr = struct.pack('<2BB3HB2H2BHBI3B', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BB3HB2H2BHBI3BB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_SENSOR_CONFIG:
+                byteStr = struct.pack('<2B6B', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B6BB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_MISC:
+                byteStr = struct.pack('<2B5H6Bh4B', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B5H6Bh4BB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_3D:
+                byteStr = struct.pack('<2B3H', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B3HB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_NAME:
+                byteStr = struct.pack('<2B%dB' % total_data[3], *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B%dBB' % total_data[3], *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_ADVANCED_CONFIG:
+                byteStr = struct.pack('<2B4B2HB', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B4B2HBB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_INAV_PID:
+                byteStr = struct.pack('<2BB2H2BH6B', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BB2H2BH6BB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_CURRENT_METER_CONFIG:
+                byteStr = struct.pack('<2B2HBH', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B2HBHB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_FAILSAFE_CONFIG:
+                byteStr = struct.pack('<2B2BHBH2B5HB', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B2BHBH2B5HBB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_FEATURE:
+                byteStr = struct.pack('<2BI', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BIB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_PID:
+                byteStr = struct.pack('<2B%dB' % total_data[3], *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B%dBB' % total_data[3], *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_RC_TUNING:
+                byteStr = struct.pack('<2B8BHB', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B8BHBB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_PID_ADVANCED:
+                byteStr = struct.pack('<2B3H4BHB2H', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B3H4BHB2HB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_FILTER_CONFIG:
+                byteStr = struct.pack('<2BB2H2H2H2H', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BB2H2H2H2HB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_NAV_POSHOLD:
+                byteStr = struct.pack('<2BB4H2BH', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BB4H2BHB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_RTH_AND_LAND_CONFIG:
+                byteStr = struct.pack('<2BH5B6H', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BH5B6HB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_POSITION_ESTIMATION_CONFIG:
+                byteStr = struct.pack('<2B5H2B', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B5H2BB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_XBEE_SELF_TELEMETRY_ADDR:
+                byteStr = struct.pack('<2BI', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BIB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_XBEE_TELEMETRY_SOURCE_ADDR:
+                byteStr = struct.pack('<2B3I', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B3IB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_XBEE_TELEMETRY_DESTINATION_ADDR:
+                byteStr = struct.pack('<2B3I', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B3IB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_XBEE_SELF_RC_ADDR:
+                byteStr = struct.pack('<2BI', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BIB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_XBEE_RC_SOURCE_ADDR:
+                byteStr = struct.pack('<2BI', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2BIB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_FORMATION_CONFIG:
+                byteStr = struct.pack('<2B5H2B3HI', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B5H2B3HIB', *tempList)
+                    return tempData
+                except (Exception, error):
+                    print(Exception,error)
+            elif cmd == MSPv1.MSP_SET_NETWORK_CONFIG:
+                byteStr = struct.pack('<2B9I', *total_data[3:len(total_data)])
+                for i in "".join( chr(x) for x in byteStr):
+                    checksum = checksum ^ ord(i)
+                total_data.append(checksum)
+                try:
+                    tempList = []
+                    for i in range(3):
+                        tempList.append(total_data[i].encode('ascii'))
+                    for i in range(3,len(total_data)):
+                        tempList.append(total_data[i])
+                    tempData = struct.pack('<3c2B9IB', *tempList)
                     return tempData
                 except (Exception, error):
                     print(Exception,error)
@@ -784,7 +1254,7 @@ class MSPv1(QObject):
                 pass
             elif rec_cmd == MSPv1.MSP_CF_SERIAL_CONFIG:
                 temp = struct.unpack('<' + 'BH4B'*int(data_length/7), data)
-                self.qsObj.msp_cf_serial_config = temp
+                self.qsObj.msp_cf_serial_config = list(temp)
             elif rec_cmd == MSPv1.MSP_RC_DEADBAND:
                 temp = struct.unpack('<3BH', data)
                 self.qsObj.msp_rc_deadband['deadband'] = temp[0]
@@ -808,9 +1278,54 @@ class MSPv1(QObject):
                 temp = struct.unpack('<4B',data)
             elif rec_cmd == MSPv1.MSP_NAME:
                 temp = struct.unpack('<'+'B'*data_length,data)
+                self.qsObj.msp_name = "".join([chr(x) for x in temp])
             elif rec_cmd == MSPv1.MSP_WP:
                 temp = struct.unpack('<2B3i3hB',data)
                 self.qsObj.tempMission = list(temp)
+            elif rec_cmd == MSPv1.MSP_XBEE_SELF_TELEMETRY_ADDR:
+                temp = struct.unpack('<I', data)
+                self.qsObj.msp_xbee_self_telemetry_addr = temp[0]
+                print(self.qsObj.msp_xbee_self_telemetry_addr)
+            elif rec_cmd == MSPv1.MSP_XBEE_TELEMETRY_SOURCE_ADDR:
+                temp = struct.unpack('<3I', data)
+                self.qsObj.msp_xbee_telemetry_source_addr = temp
+                print(self.qsObj.msp_xbee_telemetry_source_addr)
+            elif rec_cmd == MSPv1.MSP_XBEE_TELEMETRY_DESTINATION_ADDR:
+                temp = struct.unpack('<3I', data)
+                self.qsObj.msp_xbee_telemetry_destination_addr = temp
+                print(self.qsObj.msp_xbee_telemetry_destination_addr)
+            elif rec_cmd == MSPv1.MSP_XBEE_SELF_RC_ADDR:
+                temp = struct.unpack('<I', data)
+                self.qsObj.msp_xbee_self_rc_addr = temp[0]
+                print(self.qsObj.msp_xbee_self_rc_addr)
+            elif rec_cmd == MSPv1.MSP_XBEE_RC_SOURCE_ADDR:
+                temp = struct.unpack('<I', data)
+                self.qsObj.msp_xbee_rc_source_addr = temp[0]
+                print(self.qsObj.msp_xbee_rc_source_addr)
+            elif rec_cmd == MSPv1.MSP_FORMATION_CONFIG:
+                temp = struct.unpack('<5H2B3HI', data)
+                self.qsObj.msp_formation_config['flight_height'] = temp[0]
+                self.qsObj.msp_formation_config['distance_gain'] = temp[1]
+                self.qsObj.msp_formation_config['area_gain'] = temp[2]
+                self.qsObj.msp_formation_config['lat_gain'] = temp[3]
+                self.qsObj.msp_formation_config['lon_gain'] = temp[4]
+                self.qsObj.msp_formation_config['graph_type'] = temp[5]
+                self.qsObj.msp_formation_config['identity'] = temp[6]
+                self.qsObj.msp_formation_config['d_ji'] = temp[7]
+                self.qsObj.msp_formation_config['d_ki'] = temp[8]
+                self.qsObj.msp_formation_config['d_kj'] = temp[9]
+                self.qsObj.msp_formation_config['ad'] = temp[10]
+            elif rec_cmd == MSPv1.MSP_NETWORK_CONFIG:
+                temp = struct.unpack('<9I', data)
+                self.qsObj.msp_network_config['selfTeleAddressLow'] = temp[0]
+                self.qsObj.msp_network_config['teleSource1AddressLow'] = temp[1]
+                self.qsObj.msp_network_config['teleSource2AddressLow'] = temp[2]
+                self.qsObj.msp_network_config['teleSource3AddressLow'] = temp[3]
+                self.qsObj.msp_network_config['teleDestination1AddressLow'] = temp[4]
+                self.qsObj.msp_network_config['teleDestination2AddressLow'] = temp[5]
+                self.qsObj.msp_network_config['teleDestination3AddressLow'] = temp[6]
+                self.qsObj.msp_network_config['selfRemoteAddressLow'] = temp[7]
+                self.qsObj.msp_network_config['remoteSourceAddressLow'] = temp[8]
             else:
                 return "No return error!"
         return validFlag
@@ -1054,16 +1569,118 @@ class MSPv1(QObject):
         # To do: MSP2_INAV_RATE_PROFILE
 
     def processParameterSettingSave(self):
+        # PID Tuning
         # MSP_SET_PID
+        # print(self.qsObj.msp_pidnames)
+        # print(self.qsObj.msp_pid)
+        tempPacket = self.constructSendPacket(3*len(self.qsObj.msp_pidnames), MSPv1.MSP_SET_PID, self.qsObj.msp_pid)
+        self.sendPacket(tempPacket)
+
         # MSPV2_INAV_SET_RATE_PROFILE,
-        # MSP_RC_TUNING,
-        # MSP_SET_INAV_PID,
-        # MSP_SET_PID_ADVANCED,
+        # MSP_SET_RC_TUNING
+        tempPacket = self.constructSendPacket(11, MSPv1.MSP_SET_RC_TUNING,
+                                              [self.qsObj.msp_rc_tuning['reserve1'],
+                                               self.qsObj.msp_rc_tuning['stabilized_rc_expo'],
+                                               self.qsObj.msp_rc_tuning['roll_rate'],
+                                               self.qsObj.msp_rc_tuning['pitch_rate'],
+                                               self.qsObj.msp_rc_tuning['yaw_rate'],
+                                               self.qsObj.msp_rc_tuning['throttle_dyn_pid'],
+                                               self.qsObj.msp_rc_tuning['throttle_rc_mid'],
+                                               self.qsObj.msp_rc_tuning['throttle_rc_expo'],
+                                               self.qsObj.msp_rc_tuning['throttle_pa_breakpoint'],
+                                               self.qsObj.msp_rc_tuning['stabilized_rc_yaw_expo'] ])
+        # MSP_SET_INAV_PID
+        tempPacket = self.constructSendPacket(15, MSPv1.MSP_SET_INAV_PID,
+                                              [self.qsObj.msp_inav_pid['async_mode'],
+                                               self.qsObj.msp_inav_pid['acc_task_frequency'],
+                                               self.qsObj.msp_inav_pid['attitude_task_frequency'],
+                                               self.qsObj.msp_inav_pid['heading_hold_rate_limit'],
+                                               self.qsObj.msp_inav_pid['heading_hold_error_lpf_freq'],
+                                               self.qsObj.msp_inav_pid['yaw_jump_prevention_limit'],
+                                               self.qsObj.msp_inav_pid['gyro_lpf'],
+                                               self.qsObj.msp_inav_pid['acc_soft_lpf_hz'],
+                                               self.qsObj.msp_inav_pid['reserve1'],
+                                               self.qsObj.msp_inav_pid['reserve2'],
+                                               self.qsObj.msp_inav_pid['reserve3'],
+                                               self.qsObj.msp_inav_pid['reserve4'] ])
+        self.sendPacket(tempPacket)
+        # MSP_SET_PID_ADVANCED
+        print(self.qsObj.msp_pid_advanced)
+        tempPacket = self.constructSendPacket(17, MSPv1.MSP_SET_PID_ADVANCED,
+                                              [self.qsObj.msp_pid_advanced['roll_pitch_i_term_ignore_rate'],
+                                               self.qsObj.msp_pid_advanced['yaw_i_term_ignore_rate'],
+                                               self.qsObj.msp_pid_advanced['yaw_p_limit'],
+                                               self.qsObj.msp_pid_advanced['reserve1'],
+                                               self.qsObj.msp_pid_advanced['reserve2'],
+                                               self.qsObj.msp_pid_advanced['reserve3'],
+                                               self.qsObj.msp_pid_advanced['d_term_setpoint_weight'],
+                                               self.qsObj.msp_pid_advanced['pid_sum_limit'],
+                                               self.qsObj.msp_pid_advanced['reserve4'],
+                                               self.qsObj.msp_pid_advanced['axis_acceleration_limit_roll_pitch'],
+                                               self.qsObj.msp_pid_advanced['axis_acceleration_limit_yaw'] ])
+        self.sendPacket(tempPacket)
+
+        # Filtering
         # MSP_SET_FILTER_CONFIG
+        tempPacket = self.constructSendPacket(13, MSPv1.MSP_SET_FILTER_CONFIG,
+                                              [self.qsObj.msp_filter_config['gyro_soft_lpf_hz'],
+                                               self.qsObj.msp_filter_config['dterm_lpf_hz'],
+                                               self.qsObj.msp_filter_config['yaw_lpf_hz'],
+                                               self.qsObj.msp_filter_config['gyro_soft_notch_hz_1'],
+                                               self.qsObj.msp_filter_config['gyro_soft_notch_cutoff_1'],
+                                               self.qsObj.msp_filter_config['dterm_soft_notch_hz'],
+                                               self.qsObj.msp_filter_config['dterm_soft_notch_cutoff'],
+                                               self.qsObj.msp_filter_config['gyro_soft_notch_hz_2'],
+                                               self.qsObj.msp_filter_config['gyro_soft_notch_cutoff_2'] ])
+        self.sendPacket(tempPacket)
+
+        # Miscellaneous
+        # MSP_SET_INAV_PID, MSP_SET_PID_ADVANCED, MSP_SET_RC_TUNING
+        # All set above.
+
+        # Basic Navigation Settings
         # MSP_SET_NAV_POSHOLD
-        # MSP_SET_POSITION_ESTIMATION_CONFIG
+        tempPacket = self.constructSendPacket(13, MSPv1.MSP_SET_NAV_POSHOLD,
+                                              [self.qsObj.msp_nav_poshold['user_control_mode'],
+                                               self.qsObj.msp_nav_poshold['max_auto_speed'],
+                                               self.qsObj.msp_nav_poshold['max_auto_climb_rate'],
+                                               self.qsObj.msp_nav_poshold['max_manual_speed'],
+                                               self.qsObj.msp_nav_poshold['max_manual_climb_rate'],
+                                               self.qsObj.msp_nav_poshold['mc_max_bank_angle'],
+                                               self.qsObj.msp_nav_poshold['use_thr_mid_for_althold'],
+                                               self.qsObj.msp_nav_poshold['mc_hover_throttle'] ])
+        self.sendPacket(tempPacket)
+
+        # RTH and Landing Settings
         # MSP_SET_RTH_AND_LAND_CONFIG
+        tempPacket = self.constructSendPacket(19, MSPv1.MSP_SET_RTH_AND_LAND_CONFIG,
+                                              [self.qsObj.msp_rth_and_land_config['min_rth_distance'],
+                                               self.qsObj.msp_rth_and_land_config['rth_climb_first'],
+                                               self.qsObj.msp_rth_and_land_config['rth_climb_ignore_emerg'],
+                                               self.qsObj.msp_rth_and_land_config['rth_tail_first'],
+                                               self.qsObj.msp_rth_and_land_config['rth_allow_landing'],
+                                               self.qsObj.msp_rth_and_land_config['rth_alt_control_mode'],
+                                               self.qsObj.msp_rth_and_land_config['rth_abort_threshold'],
+                                               self.qsObj.msp_rth_and_land_config['rth_altitude'],
+                                               self.qsObj.msp_rth_and_land_config['land_descent_rate'],
+                                               self.qsObj.msp_rth_and_land_config['land_slowdown_minalt'],
+                                               self.qsObj.msp_rth_and_land_config['land_slowdown_maxalt'],
+                                               self.qsObj.msp_rth_and_land_config['emerg_descent_rate'] ])
+        self.sendPacket(tempPacket)
         # MSP_SET_FW_CONFIG
+
+        # Position Estimator
+        # MSP_SET_POSITION_ESTIMATION_CONFIG
+        tempPacket = self.constructSendPacket(12, MSPv1.MSP_SET_POSITION_ESTIMATION_CONFIG,
+                                              [self.qsObj.msp_position_estimation_config['w_z_baro_p'],
+                                               self.qsObj.msp_position_estimation_config['w_z_gps_p'],
+                                               self.qsObj.msp_position_estimation_config['w_z_gps_v'],
+                                               self.qsObj.msp_position_estimation_config['w_xy_gps_p'],
+                                               self.qsObj.msp_position_estimation_config['w_xy_gps_v'],
+                                               self.qsObj.msp_position_estimation_config['gps_min_sats'],
+                                               self.qsObj.msp_position_estimation_config['use_gps_velned'] ])
+        self.sendPacket(tempPacket)
+
         print("Parameter Setting Saved")
         # Save to EEPROM
         self.saveToEEPROM()
@@ -1073,7 +1690,9 @@ class MSPv1(QObject):
     def processConfigureCheck(self):
         # MSP_BF_CONFIG
         # MSP_ARMING_CONFIG
+        self.readFromFC(0, MSPv1.MSP_ARMING_CONFIG, [])
         # MSP_LOOP_TIME
+        self.readFromFC(0, MSPv1.MSP_LOOP_TIME, [])
         # MSP_VTX_CONFIG
         # MSPV2_INAV_MISC
         # Serial Port
@@ -1114,44 +1733,273 @@ class MSPv1(QObject):
         # MSP_RC
 
     def processConfigureSave(self):
+        print("---MSPv1 Debug---")
+        # Port
         # MSP_SET_CF_SERIAL_CONFIG
+        tempPacket = self.constructSendPacket(21, MSPv1.MSP_SET_CF_SERIAL_CONFIG, self.qsObj.msp_cf_serial_config)
+        self.sendPacket(tempPacket)
         # print(self.qsObj.msp_cf_serial_config)
+
+        # Mixer
         # MSP_SET_MIXER
+        tempPacket = self.constructSendPacket(1, MSPv1.MSP_SET_MIXER, [self.qsObj.msp_mixer['mixer_mode']])
+        self.sendPacket(tempPacket)
         # print(self.qsObj.msp_mixer)
+
+        # Board Alignment
         # MSP_SET_BOARD_ALIGNMENT
         # print(self.qsObj.msp_board_alignment)
-        # MSP_SET_3D
+        tempPacket = self.constructSendPacket(6, MSPv1.MSP_SET_BOARD_ALIGNMENT,
+                                              [self.qsObj.msp_board_alignment['roll_deci_degrees'],
+                                               self.qsObj.msp_board_alignment['pitch_deci_degrees'],
+                                               self.qsObj.msp_board_alignment['yaw_deci_degrees'] ])
+        self.sendPacket(tempPacket)
+
+        # Board Alignment
         # MSP_SET_SENSOR_ALIGNMENT
+        tempPacket = self.constructSendPacket(3, MSPv1.MSP_SET_SENSOR_ALIGNMENT,
+                                              [self.qsObj.msp_sensor_alignment['gyro_align'],
+                                               self.qsObj.msp_sensor_alignment['acc_align'],
+                                               self.qsObj.msp_sensor_alignment['mag_align'] ])
+        self.sendPacket(tempPacket)
         # print(self.qsObj.msp_sensor_alignment)
+
         # MSP_SET_ACC_TRIM
         # MSP_SET_ARMING_CONFIG
+        tempPacket = self.constructSendPacket(2, MSPv1.MSP_SET_ARMING_CONFIG,
+                                              [self.qsObj.msp_arming_config['auto_disarm_delay'],
+                                               self.qsObj.msp_arming_config['disarm_kill_switch']])
+        self.sendPacket(tempPacket)
+
         # MSP_SET_LOOP_TIME
+        # print(self.qsObj.msp_loop_time)
+        tempPacket = self.constructSendPacket(2, MSPv1.MSP_SET_LOOP_TIME, [self.qsObj.msp_loop_time['looptime']])
+        self.sendPacket(tempPacket)
+
+        # Receiver
         # MSP_SET_RX_CONFIG
         # print(self.qsObj.msp_rx_config)
-        # MSP_SET_ADVANCED_CONFIG
-        # MSP_SET_INAV_PID
+        tempPacket = self.constructSendPacket(24, MSPv1.MSP_SET_RX_CONFIG,
+                                              [self.qsObj.msp_rx_config['serialrx_provider'],
+                                               self.qsObj.msp_rx_config['max_check'],
+                                               self.qsObj.msp_rx_config['mid_rc'],
+                                               self.qsObj.msp_rx_config['min_check'],
+                                               self.qsObj.msp_rx_config['spektrum_sat_bind'],
+                                               self.qsObj.msp_rx_config['rx_min_usec'],
+                                               self.qsObj.msp_rx_config['rx_max_usec'],
+                                               self.qsObj.msp_rx_config['rc_interpolation'],
+                                               self.qsObj.msp_rx_config['rc_interpolation_interval'],
+                                               self.qsObj.msp_rx_config['air_mode_activate_threshold'],
+                                               self.qsObj.msp_rx_config['rx_spi_protocol'],
+                                               self.qsObj.msp_rx_config['rx_spi_id'],
+                                               self.qsObj.msp_rx_config['rx_spi_rf_channel_count'],
+                                               self.qsObj.msp_rx_config['fpv_cam_angle_degrees'],
+                                               self.qsObj.msp_rx_config['receiver_type'] ])
+        self.sendPacket(tempPacket)
+
+        # Sensors
         # MSP_SET_SENSOR_CONFIG
         # print(self.qsObj.msp_sensor_config)
+        tempPacket = self.constructSendPacket(6, MSPv1.MSP_SET_SENSOR_CONFIG,
+                                              [self.qsObj.msp_sensor_config['acc'],
+                                               self.qsObj.msp_sensor_config['baro'],
+                                               self.qsObj.msp_sensor_config['mag'],
+                                               self.qsObj.msp_sensor_config['pitot'],
+                                               self.qsObj.msp_sensor_config['rangefinder'],
+                                               self.qsObj.msp_sensor_config['opflow']])
+        self.sendPacket(tempPacket)
+
         # MSP_SET_VTX_CONFIG
-        # MSP_SET_NAME
+
+        # GPS
         # MSP_SET_MISC
+        # print(self.qsObj.msp_misc)
+        tempPacket = self.constructSendPacket(22, MSPv1.MSP_SET_MISC,
+                                              [self.qsObj.msp_misc['mid_rc'],
+                                               self.qsObj.msp_misc['min_throttle'],
+                                               self.qsObj.msp_misc['max_throttle'],
+                                               self.qsObj.msp_misc['min_command'],
+                                               self.qsObj.msp_misc['failsafe_throttle'],
+                                               self.qsObj.msp_misc['gps_provider'],
+                                               self.qsObj.msp_misc['gps_baudrate'],
+                                               self.qsObj.msp_misc['gps_sbas_mode'],
+                                               self.qsObj.msp_misc['reserve1'],
+                                               self.qsObj.msp_misc['rssi_channel'],
+                                               self.qsObj.msp_misc['reserve2'],
+                                               self.qsObj.msp_misc['mag_declination'],
+                                               self.qsObj.msp_misc['voltage_scale'],
+                                               self.qsObj.msp_misc['voltage_cell_min'],
+                                               self.qsObj.msp_misc['voltage_cell_max'],
+                                               self.qsObj.msp_misc['voltage_cell_warning']])
+        self.sendPacket(tempPacket)
+
         # MSPV2_INAV_SET_MISC
-        # MSP_SET_FAILSAFE_CONFIG
+
+        # 3D
+        # MSP_SET_3D
+        tempPacket = self.constructSendPacket(6, MSPv1.MSP_SET_3D,
+                                              [self.qsObj.msp_3d['deadband3d_low'],
+                                               self.qsObj.msp_3d['deadband3d_high'],
+                                               self.qsObj.msp_3d['neutral3d'] ])
+        self.sendPacket(tempPacket)
+
+        # Name
+        # MSP_SET_NAME
+        # Max Name Size: 16 characters
+        tempPacket = self.constructSendPacket(len(self.qsObj.msp_name), MSPv1.MSP_SET_NAME, [ord(x) for x in list(self.qsObj.msp_name)])
+        self.sendPacket(tempPacket)
+
+        # ESC/Motor Features
+        # MSP_ADVANCED_CONFIG, MSP_MISC
+        # MSP_MISC is set above.
+        tempPacket = self.constructSendPacket(9, MSPv1.MSP_SET_ADVANCED_CONFIG,
+                                              [self.qsObj.msp_advanced_config['reserve1'],
+                                               self.qsObj.msp_advanced_config['reserve2'],
+                                               self.qsObj.msp_advanced_config['reserve3'],
+                                               self.qsObj.msp_advanced_config['motor_pwm_protocol'],
+                                               self.qsObj.msp_advanced_config['motor_pwm_rate'],
+                                               self.qsObj.msp_advanced_config['servo_pwm_rate'],
+                                               self.qsObj.msp_advanced_config['gyro_sync'] ])
+        self.sendPacket(tempPacket)
+
+        # System Configuration
+        # MSP_INAV_PID, MSP_LOOP_TIME, MSP_ADVANCED_CONFIG
+        # MSP_LOOP_TIME and MSP_ADVANCED_CONFIG are set above.
+        tempPacket = self.constructSendPacket(15, MSPv1.MSP_SET_INAV_PID,
+                                              [self.qsObj.msp_inav_pid['async_mode'],
+                                               self.qsObj.msp_inav_pid['acc_task_frequency'],
+                                               self.qsObj.msp_inav_pid['attitude_task_frequency'],
+                                               self.qsObj.msp_inav_pid['heading_hold_rate_limit'],
+                                               self.qsObj.msp_inav_pid['heading_hold_error_lpf_freq'],
+                                               self.qsObj.msp_inav_pid['yaw_jump_prevention_limit'],
+                                               self.qsObj.msp_inav_pid['gyro_lpf'],
+                                               self.qsObj.msp_inav_pid['acc_soft_lpf_hz'],
+                                               self.qsObj.msp_inav_pid['reserve1'],
+                                               self.qsObj.msp_inav_pid['reserve2'],
+                                               self.qsObj.msp_inav_pid['reserve3'],
+                                               self.qsObj.msp_inav_pid['reserve4'] ])
+        self.sendPacket(tempPacket)
+
+        # Battery Voltage
+        # MSP_SET_MISC
+        # MSP_SET_MISC is set above.
+
+        # Current Sensor
+        # MSP_SET_CURRENT_METER_CONFIG
+        tempPacket = self.constructSendPacket(7, MSPv1.MSP_SET_CURRENT_METER_CONFIG,
+                                              [self.qsObj.msp_current_meter_config['scale'],
+                                               self.qsObj.msp_current_meter_config['offset'],
+                                               self.qsObj.msp_current_meter_config['type'],
+                                               self.qsObj.msp_current_meter_config['capabity_value'] ])
+        self.sendPacket(tempPacket)
+
+        # Battery Capacity
+
+        # Failsafe
+        # MSP_SET_RX_CONFIG, MSP_SET_FAILSAFE_CONFIG
+        # MSP_SET_RX_CONFIG is set above.
+        tempPacket = self.constructSendPacket(20, MSPv1.MSP_SET_FAILSAFE_CONFIG,
+                                              [self.qsObj.msp_failsafe_config['failsafe_delay'],
+                                               self.qsObj.msp_failsafe_config['failsafe_off_delay'],
+                                               self.qsObj.msp_failsafe_config['failsafe_throttle'],
+                                               self.qsObj.msp_failsafe_config['failsafe_kill_switch'],
+                                               self.qsObj.msp_failsafe_config['failsafe_throttle_low_delay'],
+                                               self.qsObj.msp_failsafe_config['failsafe_procedure'],
+                                               self.qsObj.msp_failsafe_config['failsafe_recovery_delay'],
+                                               self.qsObj.msp_failsafe_config['failsafe_fw_roll_angle'],
+                                               self.qsObj.msp_failsafe_config['failsafe_fw_pitch_angle'],
+                                               self.qsObj.msp_failsafe_config['failsafe_fw_yaw_rate'],
+                                               self.qsObj.msp_failsafe_config['failsafe_stick_motion_threshold'],
+                                               self.qsObj.msp_failsafe_config['failsafe_min_distance'],
+                                               self.qsObj.msp_failsafe_config['failsafe_min_distance_procedure'] ])
+        self.sendPacket(tempPacket)
+
         # MSP_SET_BF_CONFIG
-        # MSP_SET_RX_CONFIG
+
+        # Other Features
         # MSP_SET_FEATURE
-        print(self.qsObj.msp_feature)
+        # print(self.qsObj.msp_feature)
+        tempPacket = self.constructSendPacket(4, MSPv1.MSP_SET_FEATURE, [self.qsObj.msp_feature['mask']])
+        self.sendPacket(tempPacket)
+
         # Save settings to EEPROM
         print("Configure Saved")
         # Save to EEPROM
-        # self.saveToEEPROM()
+        self.saveToEEPROM()
         # Reboot
-        # self.reboot()
+        self.reboot()
 
     def processTopologyCheck(self):
-        pass
+        # Network Configure
+        # MSP_NETWORK_CONFIG
+        self.readFromFC(0, MSPv1.MSP_NETWORK_CONFIG, [])
+        # Address
+        # # MSP_XBEE_SELF_TELEMETRY_ADDR
+        # self.readFromFC(0, MSPv1.MSP_XBEE_SELF_TELEMETRY_ADDR, [])
+        # # MSP_XBEE_TELEMETRY_SOURCE_ADDR
+        # self.readFromFC(0, MSPv1.MSP_XBEE_TELEMETRY_SOURCE_ADDR, [])
+        # # MSP_XBEE_TELEMETRY_DESTINATION_ADDR
+        # self.readFromFC(0, MSPv1.MSP_XBEE_TELEMETRY_DESTINATION_ADDR, [])
+        # # MSP_XBEE_SELF_RC_ADDR
+        # self.readFromFC(0, MSPv1.MSP_XBEE_SELF_RC_ADDR, [])
+        # # MSP_XBEE_RC_SOURCE_ADDR
+        # self.readFromFC(0, MSPv1.MSP_XBEE_RC_SOURCE_ADDR, [])
+        # Formation Configure
+        # MSP_FORMATION_CONFIG
+        self.readFromFC(0, MSPv1.MSP_FORMATION_CONFIG, [])
 
     def processTopologySave(self):
+        # Network
+        tempPacket = self.constructSendPacket(36, MSPv1.MSP_SET_NETWORK_CONFIG,
+                                              [self.qsObj.msp_network_config['selfTeleAddressLow'],
+                                               self.qsObj.msp_network_config['teleSource1AddressLow'],
+                                               self.qsObj.msp_network_config['teleSource2AddressLow'],
+                                               self.qsObj.msp_network_config['teleSource3AddressLow'],
+                                               self.qsObj.msp_network_config['teleDestination1AddressLow'],
+                                               self.qsObj.msp_network_config['teleDestination2AddressLow'],
+                                               self.qsObj.msp_network_config['teleDestination3AddressLow'],
+                                               self.qsObj.msp_network_config['selfRemoteAddressLow'],
+                                               self.qsObj.msp_network_config['remoteSourceAddressLow'] ])
+        self.sendPacket(tempPacket)
+        # # Address
+        # # MSP_SET_XBEE_SELF_TELEMETRY_ADDR
+        # tempPacket = self.constructSendPacket(4, MSPv1.MSP_SET_XBEE_SELF_TELEMETRY_ADDR,
+        #                                       [self.qsObj.msp_xbee_self_telemetry_addr])
+        # self.sendPacket(tempPacket)
+        # # MSP_SET_XBEE_TELEMETRY_SOURCE_ADDR
+        # tempPacket = self.constructSendPacket(12, MSPv1.MSP_SET_XBEE_TELEMETRY_SOURCE_ADDR,
+        #                                       self.qsObj.msp_xbee_telemetry_source_addr)
+        # self.sendPacket(tempPacket)
+        # # MSP_SET_XBEE_TELEMETRY_DESTINATION_ADDR
+        # tempPacket = self.constructSendPacket(12, MSPv1.MSP_SET_XBEE_TELEMETRY_DESTINATION_ADDR,
+        #                                       self.qsObj.msp_xbee_telemetry_destination_addr)
+        # self.sendPacket(tempPacket)
+        # # MSP_SET_XBEE_SELF_RC_ADDR
+        # tempPacket = self.constructSendPacket(4, MSPv1.MSP_SET_XBEE_SELF_RC_ADDR,
+        #                                       [self.qsObj.msp_xbee_self_rc_addr])
+        # self.sendPacket(tempPacket)
+        # # MSP_SET_XBEE_RC_SOURCE_ADDR
+        # tempPacket = self.constructSendPacket(4, MSPv1.MSP_SET_XBEE_RC_SOURCE_ADDR,
+        #                                       [self.qsObj.msp_xbee_rc_source_addr])
+        # self.sendPacket(tempPacket)
+        # Formation Configure: Gain and Target
+        # MSP_SET_FORMATION_CONFIG
+        # To do, firmware changed.
+        tempPacket = self.constructSendPacket(22, MSPv1.MSP_SET_FORMATION_CONFIG,
+                                              [self.qsObj.msp_formation_config['flight_height'],
+                                               self.qsObj.msp_formation_config['distance_gain'],
+                                               self.qsObj.msp_formation_config['area_gain'],
+                                               self.qsObj.msp_formation_config['lat_gain'],
+                                               self.qsObj.msp_formation_config['lon_gain'],
+                                               self.qsObj.msp_formation_config['graph_type'],
+                                               self.qsObj.msp_formation_config['identity'],
+                                               self.qsObj.msp_formation_config['d_ji'],
+                                               self.qsObj.msp_formation_config['d_ki'],
+                                               self.qsObj.msp_formation_config['d_kj'],
+                                               self.qsObj.msp_formation_config['ad']
+                                              ])
+        self.sendPacket(tempPacket)
+
         print("Topology Saved")
         # Save to EEPROM
         self.saveToEEPROM()
@@ -1218,8 +2066,10 @@ class MSPv1(QObject):
             #self.readFromFC(0, MSPv1.MSP_ACTIVEBOXES, [])
             #self.readFromFC(0, MSPv1.MSP_RAW_IMU, [])
             # self.dumpFormattedPrint()
-            self.readFromFC(0, MSPv1.MSP_FAILSAFE_CONFIG, [])
-            print(self.qsObj.msp_failsafe_config)
+            # self.readFromFC(0, MSPv1.MSP_FAILSAFE_CONFIG, [])
+            # print(self.qsObj.msp_failsafe_config)
+            # self.readFromFC(0, MSPv1.MSP_CF_SERIAL_CONFIG, [])
+            # print(self.qsObj.msp_cf_serial_config)
             pass
         except Exception:  # serial.serialutil.SerialException
             print(Exception)
@@ -1244,6 +2094,15 @@ class MSPv1(QObject):
         # print(self.qsObj.msp_boxnames)
         # print(self.qsObj.msp_mode_ranges)
 
+    def processSerialTerminalRequest(self):
+        rec_packet = self.readPacket2()
+        data_length = len(rec_packet)
+        if data_length > 0:
+            temp1 = struct.unpack('<'+'B'*data_length, rec_packet)
+            temp2 = [chr(x) for x in temp1]
+            ret_str = "".join(temp2)
+            self.serTerFeedbackSignal.emit(ret_str)
+
     def processDiff(self):
         # Show the difference between current settings and default settings
         pass
@@ -1266,8 +2125,11 @@ class MSPv1(QObject):
 
     def reboot(self):
         # Reboot board
-        # tempPacket = self.constructSendPacket(0, MSPv1.MSP_REBOOT, [])
-        # self.sendPacket(tempPacket)
+        # Enable the code below after all tested
+        tempPacket = self.constructSendPacket(0, MSPv1.MSP_REBOOT, [])
+        self.sendPacket(tempPacket)
+        # Reboot Configurator
+        self.rebootSignal.emit()
         pass
 
     # Using, Checked
