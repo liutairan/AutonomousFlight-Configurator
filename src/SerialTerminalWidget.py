@@ -34,6 +34,7 @@ import os
 import string
 import math
 import re
+import datetime
 import subprocess
 from random import *
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
@@ -43,12 +44,14 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
     QCompleter, QSizePolicy, QComboBox, QMessageBox, QDialog, QDialogButtonBox,
     QFileDialog, QGridLayout, QFormLayout, QRadioButton, QPlainTextEdit)
 from PyQt5.QtGui import QPixmap, QFont
-from PyQt5.QtCore import pyqtSlot, pyqtSignal
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QTimer
 
 class SerialTerminalWidget(QWidget):
+    serTerSignal = pyqtSignal()
     def __init__(self, parent):
         super(QWidget, self).__init__(parent)
         self.initUI()
+        self.setUpdateTimer()
 
     def initUI(self):
         self.bundle_dir = os.path.dirname(os.path.abspath(__file__))
@@ -56,7 +59,7 @@ class SerialTerminalWidget(QWidget):
         self.layout.setSpacing(0)
         self.layout.setContentsMargins(0,0,0,0)
 
-        self.cliTextEdit = QPlainTextEdit("CLI mode, type 'exit' to return, or 'help'\n\n")
+        self.cliTextEdit = QPlainTextEdit("Serial Terminal mode, type 'exit' to return, or 'help'\n\n")
         self.cliTextEdit.setStyleSheet("QPlainTextEdit {background-color:gray; color:white; min-height:590; max-height:600}")
         self.cliInputLine = QLineEdit()
         self.cliInputLine.returnPressed.connect(self.newInputReceived)
@@ -67,6 +70,28 @@ class SerialTerminalWidget(QWidget):
 
         # Set Main Layout of this page
         self.setLayout(self.layout)
+
+    # Use QTimer
+    def setUpdateTimer(self):
+        ## Start a timer to rapidly update the plot
+        self.sched = QTimer()
+        self.sched.timeout.connect(self.checkDataBuffer)
+
+    def checkDataBuffer(self):
+        self.serTerSignal.emit()
+
+    def processFeedback(self, feedbackStr):
+        date_time = str(datetime.datetime.now()).split()
+        (date, time) = date_time
+        preStr1 = "[ " + time + " ] "
+        preStr2 = "[ " + str(len(feedbackStr)) + " ] "
+        self.cliTextEdit.appendPlainText(preStr1 + preStr2 + feedbackStr)
+
+    def start(self):
+        self.sched.start(1000)
+
+    def stop(self):
+        self.sched.stop()
 
     def newInputReceived(self):
         waitingText = self.cliInputLine.text()
