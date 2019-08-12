@@ -153,11 +153,35 @@ class QuadStates:
 
         self.msp_analog = {'vbat':0, 'powermetersum':0, 'rssi':0, 'amps':0}
 
-        self.msp_nav_poshold = {'user_control_mode':0, 'max_auto_speed':0, 'max_auto_climb_rate':0, 'max_manual_speed':0, 'max_manual_climb_rate':0, 'mc_max_bank_angle':0, 'use_thr_mid_for_althold':0, 'mc_hover_throttle':0}
+        self.msp_nav_poshold = {'user_control_mode':0,
+                                'max_auto_speed':0,
+                                'max_auto_climb_rate':0,
+                                'max_manual_speed':0,
+                                'max_manual_climb_rate':0,
+                                'mc_max_bank_angle':0,
+                                'use_thr_mid_for_althold':0,
+                                'mc_hover_throttle':0}
 
-        self.msp_rth_and_land_config = {'min_rth_distance':0, 'rth_climb_first':0, 'rth_climb_ignore_emerg':0, 'rth_tail_first':0, 'rth_allow_landing':0, 'rth_alt_control_mode':0, 'rth_abort_threshold':0, 'rth_altitude':0, 'land_descent_rate':0, 'land_slowdown_minalt':0, 'land_slowdown_maxalt':0, 'emerg_descent_rate':0}
+        self.msp_rth_and_land_config = {'min_rth_distance':0,
+                                        'rth_climb_first':0,
+                                        'rth_climb_ignore_emerg':0,
+                                        'rth_tail_first':0,
+                                        'rth_allow_landing':0,
+                                        'rth_alt_control_mode':0,
+                                        'rth_abort_threshold':0,
+                                        'rth_altitude':0,
+                                        'land_descent_rate':0,
+                                        'land_slowdown_minalt':0,
+                                        'land_slowdown_maxalt':0,
+                                        'emerg_descent_rate':0}
 
-        self.msp_position_estimation_config = {'w_z_baro_p':0, 'w_z_gps_p':0, 'w_z_gps_v':0, 'w_xy_gps_p':0, 'w_xy_gps_v':0, 'gps_min_sats':0, 'use_gps_velned':0}
+        self.msp_position_estimation_config = {'w_z_baro_p':0,
+                                               'w_z_gps_p':0,
+                                               'w_z_gps_v':0,
+                                               'w_xy_gps_p':0,
+                                               'w_xy_gps_v':0,
+                                               'gps_min_sats':0,
+                                               'use_gps_velned':0}
 
         self.rcChannels = {'roll':0,'pitch':0,'yaw':0,'throttle':0,'aux1':0,'aux2':0,'aux3':0,'aux4':0,'elapsed':0,'timestamp':0}
         self.msp_raw_imu = {'ax':0,'ay':0,'az':0,'gx':0,'gy':0,'gz':0,'mx':0,'my':0,'mz':0,'elapsed':0,'timestamp':0}
@@ -186,3 +210,26 @@ class QuadStates:
         self.missionList = []
         self.tempMission = []
         self.downloadMissionList = []
+
+        self.msp_xbee_self_telemetry_addr = 0
+        self.msp_xbee_telemetry_source_addr = [0, 0, 0]
+        self.msp_xbee_telemetry_destination_addr = [0, 0, 0]
+        self.msp_xbee_self_rc_addr = 0
+        self.msp_xbee_rc_source_addr = 0
+        self.msp_formation_config = {'flight_height':200,
+                                     'distance_gain':1, 'area_gain':1,
+                                     'lat_gain':1000, 'lon_gain':1000,
+                                     'graph_type':0, 'identity':0,
+                                     'd_ji':100, 'd_ki':100, 'd_kj':100,
+                                     'ad': 4330}
+
+        self.msp_network_config = {'addressHigh': 0x0013A200,
+                                   'selfTeleAddressLow': 0x00000000,
+                                   'teleSource1AddressLow': 0x00000000,
+                                   'teleSource2AddressLow': 0x00000000,
+                                   'teleSource3AddressLow': 0x00000000,
+                                   'teleDestination1AddressLow': 0x00000000,
+                                   'teleDestination2AddressLow': 0x00000000,
+                                   'teleDestination3AddressLow': 0x00000000,
+                                   'selfRemoteAddressLow': 0x00000000,
+                                   'remoteSourceAddressLow': 0x00000000 }
