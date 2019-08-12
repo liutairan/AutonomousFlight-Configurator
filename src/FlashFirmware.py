@@ -42,6 +42,7 @@ try:
 except NameError:
     to_unicode = str
 
+# Need to connet two pins of the bootloader to flash the firmware if using UART.
 class FlashFirmware(QWidget):
     progressChangedSignal = pyqtSignal(str)
     def __init__(self, parent=None):
@@ -134,9 +135,10 @@ class FlashFirmware(QWidget):
     #    flash process. Using the function below can update the progress bar
     #    every step when the progress value changed.
     def writeWithVerifyAndStartExecution(self):
+        print("Write with Verify")
         # Write with verify and then start execution:
         #     stm32flash -w filename -v -g 0x0 /dev/ttyS0
-        self.firmwarePath = "/Users/liutairan/Dropbox/Code/AutonomousFlight/obj/AutonomousFlight_1.9.1_SPRACINGF3.hex"
+        self.firmwarePath = "/Users/liutairan/Dropbox/Code/AutonomousFlight/obj/AutonomousFlight_2.0.1_SPRACINGF3.hex"
         commandFields = [self.flashToolPath, "-b", str(self.baudrate), "-m", self.mode, "-w", self.firmwarePath, "-v", "-g", "0x0", self.deviceName]
         command = " ".join(commandFields)
         self.process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
