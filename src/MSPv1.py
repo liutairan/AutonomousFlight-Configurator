@@ -271,6 +271,7 @@ class MSPv1(QObject):
     calibrationFeedbackSignal = pyqtSignal()
     overviewDataUpdateSignal = pyqtSignal(int)
     sensorDataUpdateSignal = pyqtSignal(int)
+    motorDataUpdateSignal = pyqtSignal(int)
     rebootSignal = pyqtSignal()
     serTerFeedbackSignal = pyqtSignal(str)
 
@@ -948,7 +949,7 @@ class MSPv1(QObject):
             elif rec_cmd == MSPv1.MSP_MOTOR:
                 temp = struct.unpack('<8h', data)
                 self.qsObj.msp_motor = list(temp)
-                print(self.qsObj.msp_motor)
+                # print(self.qsObj.msp_motor)
             elif rec_cmd == MSPv1.MSP_3D:
                 temp = struct.unpack('<3H', data)
                 self.qsObj.msp_3d['deadband3d_low'] = temp[0]
@@ -1491,6 +1492,11 @@ class MSPv1(QObject):
         elif ind == 1:
             self.readFromFC(0, MSPv1.MSP_ALTITUDE, [])
         self.sensorDataUpdateSignal.emit(ind)
+
+    def processMotorDataRequest(self, ind):
+        if ind == 0:
+            self.readFromFC(0, MSPv1.MSP_MOTOR, [])
+        self.motorDataUpdateSignal.emit(ind)
 
     def processFeature(self):
         try:
