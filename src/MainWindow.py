@@ -56,6 +56,7 @@ from CalibrationWidget import CalibrationWidget
 from ConfigureWidget import ConfigureWidget
 from ParameterSettingWidget import ParameterSettingWidget
 from SensorWidget import SensorWidget
+from MotorInfoWidget import MotorInfoWidget
 from TopologyWidget import TopologyWidget
 from BlackboxWidget import BlackboxWidget
 
@@ -123,6 +124,10 @@ class App(QMainWindow):
         # Vertical: 2
         self.infoTabsWidget.setTabPosition(2)
 
+        self.tabNameList = ["CLI", "Overview", "Calibration", "Configure",
+                            "ParameterSetting", "Mode", "Sensor", "Motor",
+                            "Topology", "Blackbox", "SerialTerminal"]
+
         self.tabObjectDict = {"CLI":CLIWidget(self),
                               "Overview":OverviewInfoWidget(self, self.qsObj),
                               "Calibration":CalibrationWidget(self, self.qsObj),
@@ -130,6 +135,7 @@ class App(QMainWindow):
                               "ParameterSetting":ParameterSettingWidget(self, self.qsObj),
                               "Mode":FlightModeWidget(self, self.qsObj),
                               "Sensor":SensorWidget(self, self.qsObj),
+                              "Motor":MotorInfoWidget(self, self.qsObj),
                               "Topology":TopologyWidget(self, self.qsObj),
                               "Blackbox":BlackboxWidget(self),
                               "SerialTerminal":SerialTerminalWidget(self)}
@@ -179,6 +185,7 @@ class App(QMainWindow):
             self.tabObjectDict["Calibration"].magCalibrateSignal.connect(self.mspHandle.processMagCalibrationRequest)
             self.tabObjectDict["Calibration"].calibrationSaveSignal.connect(self.mspHandle.processCalibrationSave)
             self.tabObjectDict["Sensor"].sensorDataRequestSignal.connect(self.mspHandle.processSensorDataRequest)
+            self.tabObjectDict["Motor"].motorDataRequestSignal.connect(self.mspHandle.processMotorDataRequest)
             self.tabObjectDict["Topology"].topologySaveSignal.connect(self.mspHandle.processTopologySave)
             self.tabObjectDict["SerialTerminal"].serTerSignal.connect(self.mspHandle.processSerialTerminalRequest)
 
@@ -187,6 +194,7 @@ class App(QMainWindow):
             self.mspHandle.calibrationFeedbackSignal.connect(self.tabObjectDict["Calibration"].processFeedback)
             self.mspHandle.overviewDataUpdateSignal.connect(self.overviewPageUpdate)
             self.mspHandle.sensorDataUpdateSignal.connect(self.sensorPageUpdate)
+            self.mspHandle.motorDataUpdateSignal.connect(self.motorPageUpdate)
             self.mspHandle.serTerFeedbackSignal.connect(self.tabObjectDict["SerialTerminal"].processFeedback)
 
             # Change UI
@@ -246,35 +254,40 @@ class App(QMainWindow):
     # Change corresponding index if the tabObjectDict is changed.
     def setTabMode(self, index):
         if self.currentTabMode != index:
-            if index == 1:
+            if index == self.tabNameList.index("Overview"):
                 # Overview Page
                 self.tabObjectDict["Overview"].start()
             elif self.currentTabMode == 1:
                 self.tabObjectDict["Overview"].stop()
-            if index == 2:
+            if index == self.tabNameList.index("Calibration"):
                 # Calibration
                 self.calibrationPageUpdate()
-            if index == 5:
+            if index == self.tabNameList.index("Mode"):
                 # Mode
                 self.flightmodePageUpdate()
-            if index == 3:
+            if index == self.tabNameList.index("Configure"):
                 # Configure
                 self.configurePageUpdate()
-            if index == 4:
+            if index == self.tabNameList.index("ParameterSetting"):
                 # Parameter Setting
                 self.parameterSettingPageUpdate()
-            if index == 6:
+            if index == self.tabNameList.index("Sensor"):
                 # Sensor
                 self.tabObjectDict["Sensor"].start()
             elif self.currentTabMode == 6:
                 self.tabObjectDict["Sensor"].stop()
-            if index == 7:
+            if index == self.tabNameList.index("Motor"):
+                # Sensor
+                self.tabObjectDict["Motor"].start()
+            elif self.currentTabMode == 6:
+                self.tabObjectDict["Motor"].stop()
+            if index == self.tabNameList.index("Topology"):
                 # Topology
                 self.topologyPageUpdate()
-            if index == 8:
+            if index == self.tabNameList.index("Blackbox"):
                 # Blackbox
                 pass
-            if index == 9:
+            if index == self.tabNameList.index("SerialTerminal"):
                 # Serial Terminal
                 self.tabObjectDict["SerialTerminal"].start()
             elif self.currentTabMode == 9:
@@ -335,6 +348,10 @@ class App(QMainWindow):
             self.tabObjectDict["Sensor"].updateMAGPlot()
         elif ind == 1:
             self.tabObjectDict["Sensor"].updateBAROPlot()
+
+    def motorPageUpdate(self, ind):
+        if ind == 0:
+            self.tabObjectDict["Motor"].updateMotorValues()
 
     def flightmodePageUpdate(self):
         self.tabObjectDict["Mode"].setRanges()
