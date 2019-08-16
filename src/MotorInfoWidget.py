@@ -91,7 +91,7 @@ class MotorInfoWidget(QWidget):
     # Use QTimer
     def initVariables(self):
         self.step = {}
-        self.step['motor'] = 0.05
+        self.step['motor'] = 0.5
 
     # Use QTimer
     def setUpdateTimer(self):
@@ -105,11 +105,7 @@ class MotorInfoWidget(QWidget):
     def dataRequest(self, ind):
         # ind is the index of fields to be updated,
         #    ind = 0, 1, 2, 3, 4
-        #    ind = 0: attitude
-        #    ind = 1:
-        #    ind = 2:
-        #    ind = 3:
-        #    ind = 4:
+        #    ind = 0: motor
         self.motorDataRequestSignal.emit(ind)
 
     # Use QTimer, start all the timers.
@@ -123,7 +119,7 @@ class MotorInfoWidget(QWidget):
     # Update attitude labels
     def updateMotorValues(self):
         for i in range(len(self.motorLabelList)):
-            self.motorBarList[i].setValue(self.qsObj.msp_motor[i])
+            self.motorBarList[i].setValue(self.qsObj.msp_motor[str(i+1)])
 
 
 if __name__ == "__main__":
