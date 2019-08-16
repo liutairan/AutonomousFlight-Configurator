@@ -272,6 +272,7 @@ class MSPv1(QObject):
     overviewDataUpdateSignal = pyqtSignal(int)
     sensorDataUpdateSignal = pyqtSignal(int)
     motorDataUpdateSignal = pyqtSignal(int)
+    headerDataUpdateSignal = pyqtSignal(int)
     rebootSignal = pyqtSignal()
     serTerFeedbackSignal = pyqtSignal(str)
 
@@ -1497,6 +1498,15 @@ class MSPv1(QObject):
         if ind == 0:
             self.readFromFC(0, MSPv1.MSP_MOTOR, [])
         self.motorDataUpdateSignal.emit(ind)
+
+    def processHeaderDataRequest(self, ind):
+        if ind == 0:
+            self.readFromFC(0, MSPv1.MSP_STATUS_EX, [])
+            # self.parseArmingFlags()
+            self.parseActiveFlightModeFlags()
+        elif ind == 1:
+            self.readFromFC(0, MSPv1.MSP_SENSOR_STATUS, [])
+        self.headerDataUpdateSignal.emit(ind)
 
     def processFeature(self):
         try:
