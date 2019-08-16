@@ -35,6 +35,7 @@ import string
 import math
 import re
 import subprocess
+from functools import partial
 from random import *
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
     QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QAction,
@@ -43,7 +44,7 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
     QCompleter, QSizePolicy, QComboBox, QMessageBox, QDialog, QDialogButtonBox,
     QFileDialog, QGridLayout)
 from PyQt5.QtGui import QPixmap, QFont, QIcon
-from PyQt5.QtCore import pyqtSlot, pyqtSignal, QSize
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QSize, QTimer
 
 import serial.tools.list_ports
 
@@ -210,10 +211,14 @@ class InitHeaderWidget(QWidget):
 
 class StatusHeaderWidget(QWidget):
     connectionStatusChangedSignal = pyqtSignal()
-    def __init__(self, parent):
+    statusDataRequestSignal = pyqtSignal(int)
+    def __init__(self, parent=None, qsObj=None):
         super(QWidget, self).__init__(parent)
         self.initUI()
         self.connectionStatus = True
+        self.qsObj = qsObj
+        self.initVariables()
+        self.setUpdateTimer()
 
     def initUI(self):
         self.bundle_dir = os.path.dirname(os.path.abspath(__file__))
@@ -384,7 +389,48 @@ class StatusHeaderWidget(QWidget):
     def connectionResp(self):
         self.connectionStatusChangedSignal.emit()
 
-    def update(self, sensor_status_dict):
+    def initVariables(self):
+        self.step = {}
+        self.step['mode'] = 0.01
+        self.step['sensor'] = 0.01
+
+    def dataRequest(self, ind):
+        if ind == 0:
+            self.statusDataRequestSignal.emit(0)
+        elif ind == 1:
+            self.statusDataRequestSignal.emit(1)
+
+    def setUpdateTimer(self):
+        ## Start a timer to rapidly update the plot
+        self.sched = {}
+        self.sched['mode'] = QTimer()
+        self.sched['mode'].timeout.connect(partial(self.dataRequest, 0))
+
+        self.sched['sensor'] = QTimer()
+        self.sched['sensor'].timeout.connect(partial(self.dataRequest, 1))
+
+    def start(self):
+        self.sched['mode'].start(int(1.0/self.step['mode']))
+        self.sched['sensor'].start(int(1.0/self.step['sensor']))
+
+    def stop(self):
+        self.sched['mode'].stop()
+        self.sched['sensor'].stop()
+
+    def updateMMSV(self):
+        print(self.qsObj.parsed_activeboxes)
+        if "ARM" in self.qsObj.parsed_activeboxes:
+            self.mmsvWidgets["ARM"].setPixmap(self.mmsvIcons["ARM_ACTIVE"])
+        else:
+            self.mmsvWidgets["ARM"].setPixmap(self.mmsvIcons["ARM_GREY"])
+        if "FAILSAFE" in self.qsObj.parsed_activeboxes:
+            self.mmsvWidgets["FAILSAFE"].setPixmap(self.mmsvIcons["FAILSAFE_ACTIVE"])
+        else:
+            self.mmsvWidgets["FAILSAFE"].setPixmap(self.mmsvIcons["FAILSAFE_GREY"])
+
+    def updateSensorStatus(self):
+        sensor_status_dict = self.qsObj.msp_sensor_status
+
         if sensor_status_dict['acc'] == 0:
             self.accLabel.setStyleSheet("QLabel {qproperty-alignment: AlignCenter; background-color:gray; min-width:50; min-height:70; border:1px solid gray;}")
         elif sensor_status_dict['acc'] == 1:
