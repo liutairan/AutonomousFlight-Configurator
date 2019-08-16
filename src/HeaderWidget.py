@@ -418,7 +418,7 @@ class StatusHeaderWidget(QWidget):
         self.sched['sensor'].stop()
 
     def updateMMSV(self):
-        print(self.qsObj.parsed_activeboxes)
+        # print(self.qsObj.parsed_activeboxes)
         if "ARM" in self.qsObj.parsed_activeboxes:
             self.mmsvWidgets["ARM"].setPixmap(self.mmsvIcons["ARM_ACTIVE"])
         else:
