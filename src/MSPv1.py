@@ -949,8 +949,15 @@ class MSPv1(QObject):
                 self.qsObj.msp_raw_imu['mz'] = temp[8]
             elif rec_cmd == MSPv1.MSP_MOTOR:
                 temp = struct.unpack('<8h', data)
-                self.qsObj.msp_motor = list(temp)
-                # print(self.qsObj.msp_motor)
+                temp2 = list(temp)
+                self.qsObj.msp_motor['1'] = temp2[0]
+                self.qsObj.msp_motor['2'] = temp2[1]
+                self.qsObj.msp_motor['3'] = temp2[2]
+                self.qsObj.msp_motor['4'] = temp2[3]
+                self.qsObj.msp_motor['5'] = temp2[4]
+                self.qsObj.msp_motor['6'] = temp2[5]
+                self.qsObj.msp_motor['7'] = temp2[6]
+                self.qsObj.msp_motor['8'] = temp2[7]
             elif rec_cmd == MSPv1.MSP_3D:
                 temp = struct.unpack('<3H', data)
                 self.qsObj.msp_3d['deadband3d_low'] = temp[0]
@@ -1495,9 +1502,18 @@ class MSPv1(QObject):
         self.sensorDataUpdateSignal.emit(ind)
 
     def processMotorDataRequest(self, ind):
-        if ind == 0:
-            self.readFromFC(0, MSPv1.MSP_MOTOR, [])
-        self.motorDataUpdateSignal.emit(ind)
+        try:
+            if ind == 0:
+                self.readFromFC(0, MSPv1.MSP_MOTOR, [])
+                # self.qsObj.msp_motor = [0,0,0,0,0,0,0,0]
+                # self.readFromFC(0, MSPv1.MSP_STATUS_EX, [])
+            self.motorDataUpdateSignal.emit(ind)
+        except serial.serialutil.SerialException:
+            print("Serial Exception")
+        except Exception:
+            print("Process Overview Check")
+            print(Exception)
+            pass
 
     def processHeaderDataRequest(self, ind):
         if ind == 0:
