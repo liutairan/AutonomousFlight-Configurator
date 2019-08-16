@@ -257,6 +257,57 @@ class StatusHeaderWidget(QWidget):
         spacer1.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
         self.layout.addWidget(spacer1)
 
+        # Mini Mode Status and Voltage Pannel
+        mmsvPanelLayout = QVBoxLayout()
+        mmsvPanelTopSpacer = QWidget()
+        mmsvPanelTopSpacer.setMinimumHeight(10)
+
+        mmsvWidgetLayout = QGridLayout()
+        self.mmsvWidgets = {}
+        self.mmsvIconLinkList = ["/Pics/cf_icon_armed_grey.svg",
+                                 "/Pics/cf_icon_armed_grey.svg",
+                                 "/Pics/cf_icon_armed_grey.svg",
+                                 "/Pics/cf_icon_armed_grey.svg"]
+        self.mmsvIcons = {}
+        self.mmsvIcons["ARM_GREY"] = QPixmap('Pics/cf_icon_armed_grey.svg').scaled(30,30)
+        self.mmsvIcons["ARM_ACTIVE"] = QPixmap('Pics/cf_icon_armed_active.svg').scaled(30,30)
+        self.mmsvIcons["FAILSAFE_GREY"] = QPixmap('Pics/cf_icon_failsafe_grey.svg').scaled(30,30)
+        self.mmsvIcons["FAILSAFE_ACTIVE"] = QPixmap('Pics/cf_icon_failsafe_active.svg').scaled(30,30)
+        self.mmsvIcons["LINK_GREY"] = QPixmap('Pics/cf_icon_link_grey.svg').scaled(30,30)
+        self.mmsvIcons["LINK_ACTIVE"] = QPixmap('Pics/cf_icon_link_active.svg').scaled(30,30)
+
+        self.mmsvWidgets["BATTERY"] = QLabel()
+        # self.mmsvWidgets["BATTERY"].setPixmap(self.mmsvIcons["ARM_GREY"])
+        mmsvWidgetLayout.addWidget(self.mmsvWidgets["BATTERY"], 0,0,1,2)
+        self.mmsvWidgets["VOLTAGE"] = QLabel()
+        self.mmsvWidgets["VOLTAGE"].setText("0.0V")
+        mmsvWidgetLayout.addWidget(self.mmsvWidgets["VOLTAGE"], 0,2,1,1)
+
+        self.mmsvWidgets["ARM"] = QLabel()
+        self.mmsvWidgets["ARM"].setPixmap(self.mmsvIcons["ARM_GREY"])
+        mmsvWidgetLayout.addWidget(self.mmsvWidgets["ARM"], 1,0,1,1)
+
+        self.mmsvWidgets["FAILSAFE"] = QLabel()
+        self.mmsvWidgets["FAILSAFE"].setPixmap(self.mmsvIcons["FAILSAFE_GREY"])
+        mmsvWidgetLayout.addWidget(self.mmsvWidgets["FAILSAFE"], 1,1,1,1)
+
+        self.mmsvWidgets["LINK"] = QLabel()
+        self.mmsvWidgets["LINK"].setPixmap(self.mmsvIcons["LINK_GREY"])
+        mmsvWidgetLayout.addWidget(self.mmsvWidgets["LINK"], 1,2,1,1)
+
+        mmsvPanelBottomSpacer = QWidget()
+        mmsvPanelBottomSpacer.setMinimumHeight(10)
+
+        mmsvPanelLayout.addWidget(mmsvPanelTopSpacer)
+        mmsvPanelLayout.addLayout(mmsvWidgetLayout)
+        mmsvPanelLayout.addWidget(mmsvPanelBottomSpacer)
+        self.layout.addLayout(mmsvPanelLayout)
+
+        # Spacer after MMSV Panel
+        spacer2 = QWidget()
+        spacer2.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        self.layout.addWidget(spacer2)
+
         # Sensor Pannel
         sensorPanelLayout = QVBoxLayout()
         sensorPanelTopSpacer = QWidget()
@@ -304,9 +355,9 @@ class StatusHeaderWidget(QWidget):
         self.layout.addLayout(sensorPanelLayout)
 
         # Spacer after Sensor Panel
-        spacer2 = QWidget()
-        spacer2.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
-        self.layout.addWidget(spacer2)
+        spacer3 = QWidget()
+        spacer3.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
+        self.layout.addWidget(spacer3)
 
         # Connect Button
         connButtonTopSpacer = QWidget()
