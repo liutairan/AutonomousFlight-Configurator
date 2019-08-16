@@ -215,8 +215,8 @@ class App(QMainWindow):
         self.connectionStatus = False
         #
         # self.checkSchedulerShutdown()
-        self.statusHeaderWidget.stop()
         self.setTabMode(0)
+        self.statusHeaderWidget.stop()
         # End serial port
         self.closeSerialPort()
         self.qsObj = None
@@ -280,12 +280,12 @@ class App(QMainWindow):
             if index == self.tabNameList.index("Sensor"):
                 # Sensor
                 self.tabObjectDict["Sensor"].start()
-            elif self.currentTabMode == 6:
+            elif self.currentTabMode == self.tabNameList.index("Sensor"):
                 self.tabObjectDict["Sensor"].stop()
             if index == self.tabNameList.index("Motor"):
                 # Motor
                 self.tabObjectDict["Motor"].start()
-            elif self.currentTabMode == 6:
+            elif self.currentTabMode == self.tabNameList.index("Motor"):
                 self.tabObjectDict["Motor"].stop()
             if index == self.tabNameList.index("Topology"):
                 # Topology
