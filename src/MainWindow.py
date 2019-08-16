@@ -114,7 +114,7 @@ class App(QMainWindow):
 
     def initWorkingWidget(self):
         # Init StatusHeaderBar
-        self.statusHeaderWidget = StatusHeaderWidget(self)
+        self.statusHeaderWidget = StatusHeaderWidget(self, self.qsObj)
         self.statusHeaderWidget.setGeometry(0, 0, self.width, 100)
         self.statusHeaderWidget.connectionStatusChangedSignal.connect(self.processStatusConnection)
         # self.statusHeaderWidget.hide()
@@ -176,6 +176,7 @@ class App(QMainWindow):
             self.initWorkingWidget()
 
             # Send command to MSP class
+            self.statusHeaderWidget.statusDataRequestSignal.connect(self.mspHandle.processHeaderDataRequest)
             self.tabObjectDict["CLI"].cliSignal.connect(self.mspHandle.cliCommandSwitch)
             self.tabObjectDict["Overview"].overviewInfoSignal.connect(self.mspHandle.overviewInfoResponse)
             self.tabObjectDict["Mode"].flightmodeSaveSignal.connect(self.mspHandle.processModeRangesSave)
@@ -190,6 +191,7 @@ class App(QMainWindow):
             self.tabObjectDict["SerialTerminal"].serTerSignal.connect(self.mspHandle.processSerialTerminalRequest)
 
             # MSP data changed will raise this signal to update labels in UI page
+            self.mspHandle.headerDataUpdateSignal.connect(self.headerPageUpdate)
             self.mspHandle.cliFeedbackSignal.connect(self.tabObjectDict["CLI"].processFeedback)
             self.mspHandle.calibrationFeedbackSignal.connect(self.tabObjectDict["Calibration"].processFeedback)
             self.mspHandle.overviewDataUpdateSignal.connect(self.overviewPageUpdate)
@@ -206,10 +208,14 @@ class App(QMainWindow):
             self.setTabMode(0)
             self.statusBar.show()
 
+            # Start StatusHeader Timer
+            self.statusHeaderWidget.start()
+
     def processStatusConnection(self):
         self.connectionStatus = False
         #
         # self.checkSchedulerShutdown()
+        self.statusHeaderWidget.stop()
         self.setTabMode(0)
         # End serial port
         self.closeSerialPort()
@@ -277,7 +283,7 @@ class App(QMainWindow):
             elif self.currentTabMode == 6:
                 self.tabObjectDict["Sensor"].stop()
             if index == self.tabNameList.index("Motor"):
-                # Sensor
+                # Motor
                 self.tabObjectDict["Motor"].start()
             elif self.currentTabMode == 6:
                 self.tabObjectDict["Motor"].stop()
@@ -303,6 +309,12 @@ class App(QMainWindow):
         self.serialPort.stopDevice()
         self.serialPort = None
 
+    def headerPageUpdate(self, ind):
+        if ind == 0:
+            self.statusHeaderWidget.updateMMSV()
+        elif ind == 1:
+            self.statusHeaderWidget.updateSensorStatus()
+
     def overviewPageUpdate(self, ind):
         if ind == 0:
             self.tabObjectDict["Overview"].updateAttitudeLabels()
@@ -314,8 +326,8 @@ class App(QMainWindow):
             self.tabObjectDict["Overview"].updateCommunicationLabels()
         elif ind == 4:
             self.tabObjectDict["Overview"].updateGPSLabels()
-        # Update header sensor lights.
-        self.statusHeaderWidget.update(self.qsObj.msp_sensor_status)
+        # # Update header sensor lights.
+        # self.statusHeaderWidget.update(self.qsObj.msp_sensor_status)
         # Update status bar
         self.statusBarUpdate()
 
