@@ -301,9 +301,9 @@ class OverviewInfoWidget(QWidget):
             elif field == "Sats":
                 data = self.qsObj.msp_raw_gps['gps_numsat']
             elif field == "Latitude":
-                data = self.qsObj.msp_raw_gps['gps_lat']
+                data = float(self.qsObj.msp_raw_gps['gps_lat'])/10000000.0
             elif field == "Longitude":
-                data = self.qsObj.msp_raw_gps['gps_lon']
+                data = float(self.qsObj.msp_raw_gps['gps_lon'])/10000000.0
             elif field == "Altitude":
                 data = self.qsObj.msp_raw_gps['gps_altitude']
             self.gpsInfoLabelDict[field].setText(field + ": " + str(data))
