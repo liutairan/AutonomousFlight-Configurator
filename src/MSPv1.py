@@ -1109,7 +1109,7 @@ class MSPv1(QObject):
                 temp = struct.unpack('<8B',data)
                 self.qsObj.msp_motor_pins = list(temp)
             elif rec_cmd == MSPv1.MSP_RAW_GPS:
-                temp = struct.unpack('<2B2i4H',data)
+                temp = struct.unpack('<2B2ih3H',data)
                 self.qsObj.msp_raw_gps['gps_fix'] = temp[0]
                 self.qsObj.msp_raw_gps['gps_numsat'] = temp[1]
                 self.qsObj.msp_raw_gps['gps_lat'] = temp[2]
