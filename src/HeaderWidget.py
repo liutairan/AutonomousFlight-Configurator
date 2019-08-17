@@ -119,7 +119,7 @@ class InitHeaderWidget(QWidget):
 
         wirelessLabel = QLabel("Wireless Mode")
         wirelessLabel.setStyleSheet("QLabel {background-color:white; border: none;}")
-        wirelessLabel.setFixedSize(QSize(90,24))
+        wirelessLabel.setFixedSize(QSize(110,24))
         wirelessLabel.setMargin(0)
 
         # Switch Icon Image
