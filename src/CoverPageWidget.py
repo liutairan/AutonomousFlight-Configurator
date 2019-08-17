@@ -62,9 +62,9 @@ class CoverPageWidget(QWidget):
         welcomeGroupBox = QGroupBox(self)
         docsGroupBox = QGroupBox(self)
         flashGroupBox = QGroupBox(self)
-        welcomeGroupBox.setMaximumWidth(350)
-        docsGroupBox.setMaximumWidth(320)
-        flashGroupBox.setMaximumWidth(410)
+        # welcomeGroupBox.setMaximumWidth(350)
+        # docsGroupBox.setMaximumWidth(320)
+        flashGroupBox.setMaximumWidth(480)
         self.layout.addWidget(welcomeGroupBox)
         self.layout.addWidget(docsGroupBox)
         self.layout.addWidget(flashGroupBox)
@@ -73,7 +73,7 @@ class CoverPageWidget(QWidget):
         welcomeGroupBoxLayout = QVBoxLayout()
 
         welcomeTitleLabel = QLabel("Welcome")
-        welcomeTitleLabel.setFont(QFont("Times", 36, QFont.Bold))
+        welcomeTitleLabel.setFont(QFont("Times", 26, QFont.Bold))
         welcomeTitleLabel.setStyleSheet("QLabel {color:white;}")
         welcomeGroupBoxLayout.addWidget(welcomeTitleLabel)
 
@@ -89,7 +89,7 @@ class CoverPageWidget(QWidget):
         welcomeGroupBoxLayout.addWidget(introLabel)
 
         thanksLabel = QLabel("Special Thanks")
-        thanksLabel.setFont(QFont("Times", 30, QFont.Bold))
+        thanksLabel.setFont(QFont("Times", 20, QFont.Bold))
         thanksLabel.setStyleSheet("QLabel {color:white;}")
         welcomeGroupBoxLayout.addWidget(thanksLabel)
 
@@ -108,7 +108,7 @@ class CoverPageWidget(QWidget):
         docsGroupBoxLayout = QVBoxLayout()
 
         docsTitleLabel = QLabel("Documents")
-        docsTitleLabel.setFont(QFont("Times", 36, QFont.Bold))
+        docsTitleLabel.setFont(QFont("Times", 26, QFont.Bold))
         docsTitleLabel.setStyleSheet("QLabel {color:white;}")
         docsGroupBoxLayout.addWidget(docsTitleLabel)
 
@@ -127,7 +127,7 @@ class CoverPageWidget(QWidget):
         flashGroupBoxLayout = QVBoxLayout()
 
         flashTitleLabel = QLabel("Flash Firmware")
-        flashTitleLabel.setFont(QFont("Times", 36, QFont.Bold))
+        flashTitleLabel.setFont(QFont("Times", 26, QFont.Bold))
         flashTitleLabel.setStyleSheet("QLabel {color:white;}")
         flashGroupBoxLayout.addWidget(flashTitleLabel)
 
