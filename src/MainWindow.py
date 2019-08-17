@@ -265,7 +265,7 @@ class App(QMainWindow):
             if index == self.tabNameList.index("Overview"):
                 # Overview Page
                 self.tabObjectDict["Overview"].start()
-            elif self.currentTabMode == 1:
+            elif self.currentTabMode == self.tabNameList.index("Overview"):
                 self.tabObjectDict["Overview"].stop()
             if index == self.tabNameList.index("Calibration"):
                 # Calibration
@@ -298,7 +298,7 @@ class App(QMainWindow):
             if index == self.tabNameList.index("SerialTerminal"):
                 # Serial Terminal
                 self.tabObjectDict["SerialTerminal"].start()
-            elif self.currentTabMode == 9:
+            elif self.currentTabMode == self.tabNameList.index("SerialTerminal"):
                 self.tabObjectDict["SerialTerminal"].stop()
 
             self.currentTabMode = index
