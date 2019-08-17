@@ -38,9 +38,30 @@ from PyQt5.QtGui import QIcon
 
 from MainWindow import App
 
+def getScreenResolution(appHandle):
+    screenRect = appHandle.desktop().screenGeometry()
+    width = screenRect.width()
+    height = screenRect.height()
+    return (width, height)
+
+def chooseWindowSize(width, height):
+    windowWidth = width
+    windowHeight = height
+    if width <= 1280:
+        windowWidth = 1080
+    elif width == 1920:
+        windowWidth = 1440
+    if height <= 800:
+        windowHeight = 720
+    elif height == 1080:
+        windowHeight = 900
+    return (windowWidth, windowHeight)
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'Pics', 'icon.png')
     app.setWindowIcon(QIcon(path))
-    mainWindow = App()
+    (width, height) = getScreenResolution(app)
+    (windowWidth, windowHeight) = chooseWindowSize(width, height)
+    mainWindow = App(windowWidth, windowHeight)
     sys.exit(app.exec_())
