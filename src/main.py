@@ -21,13 +21,13 @@
 '''
 
 __author__ = "Tairan Liu"
-__copyright__ = "Copyright 2018, Tairan Liu"
+__copyright__ = "Copyright 2018-2019, Tairan Liu"
 __credits__ = ["Tairan Liu", "Other Supporters"]
 __license__ = "GPLv3"
-__version__ = "0.0-dev"
+__version__ = "1.0-beta"
 __maintainer__ = "Tairan Liu"
 __email__ = "liutairan2012@gmail.com"
-__status__ = "Development"
+__status__ = "Beta"
 
 import sys
 import os

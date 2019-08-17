@@ -21,13 +21,10 @@
 '''
 
 __author__ = "Tairan Liu"
-__copyright__ = "Copyright 2018, Tairan Liu"
 __credits__ = ["Tairan Liu", "Other Supporters"]
 __license__ = "GPLv3"
-__version__ = "0.0-dev"
 __maintainer__ = "Tairan Liu"
 __email__ = "liutairan2012@gmail.com"
-__status__ = "Development"
 
 import sys
 import os
@@ -80,7 +77,7 @@ class App(QMainWindow):
         self.sched = None
 
     def initUI(self):
-        self.title = 'AutonomousFlight Configurator v0.0'
+        self.title = 'AutonomousFlight Configurator v1.0'
         self.left = 0
         self.top = 0
         # self.width = 1080

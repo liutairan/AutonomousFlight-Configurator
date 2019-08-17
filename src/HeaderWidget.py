@@ -21,13 +21,10 @@
 '''
 
 __author__ = "Tairan Liu"
-__copyright__ = "Copyright 2018, Tairan Liu"
 __credits__ = ["Tairan Liu", "Other Supporters"]
 __license__ = "GPLv3"
-__version__ = "0.0-dev"
 __maintainer__ = "Tairan Liu"
 __email__ = "liutairan2012@gmail.com"
-__status__ = "Development"
 
 import sys
 import os
@@ -76,7 +73,7 @@ class InitHeaderWidget(QWidget):
         logoTextLabel1.setFont(QFont("Times", 26, QFont.Bold))
         logoTextLabel2 = QLabel("Configurator")
         logoTextLabel2.setFont(QFont("Times", 16, QFont.Bold))
-        logoTextLabel3 = QLabel("Version 0.0")
+        logoTextLabel3 = QLabel("Version 1.0")
         logoTextLabel3.setFont(QFont("Times", 12, QFont.StyleItalic))
         textBottomSpacer = QWidget()
         textBottomSpacer.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
@@ -241,7 +238,7 @@ class StatusHeaderWidget(QWidget):
         logoTextLabel1.setFont(QFont("Times", 26, QFont.Bold))
         logoTextLabel2 = QLabel("Configurator")
         logoTextLabel2.setFont(QFont("Times", 16, QFont.Bold))
-        logoTextLabel3 = QLabel("Version 0.0")
+        logoTextLabel3 = QLabel("Version 1.0")
         logoTextLabel3.setFont(QFont("Times", 12, QFont.StyleItalic))
         textBottomSpacer = QWidget()
         textBottomSpacer.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
