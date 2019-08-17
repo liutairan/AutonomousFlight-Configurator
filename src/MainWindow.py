@@ -262,6 +262,12 @@ class App(QMainWindow):
     # Change corresponding index if the tabObjectDict is changed.
     def setTabMode(self, index):
         if self.currentTabMode != index:
+            if index == self.tabNameList.index("CLI"):
+                # Stop header widget update
+                self.statusHeaderWidget.stop()
+            elif self.currentTabMode == self.tabNameList.index("CLI"):
+                # Resume header widget update
+                self.statusHeaderWidget.start()
             if index == self.tabNameList.index("Overview"):
                 # Overview Page
                 self.tabObjectDict["Overview"].start()
@@ -297,9 +303,13 @@ class App(QMainWindow):
                 pass
             if index == self.tabNameList.index("SerialTerminal"):
                 # Serial Terminal
+                # Stop header widget update
+                self.statusHeaderWidget.stop()
                 self.tabObjectDict["SerialTerminal"].start()
             elif self.currentTabMode == self.tabNameList.index("SerialTerminal"):
                 self.tabObjectDict["SerialTerminal"].stop()
+                # Resume header widget update
+                self.statusHeaderWidget.start()
 
             self.currentTabMode = index
 
