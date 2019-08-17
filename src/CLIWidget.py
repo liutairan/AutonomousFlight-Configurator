@@ -60,14 +60,14 @@ class CLIWidget(QWidget):
         self.layout.setContentsMargins(0,0,0,0)
 
         self.cliTextEdit = QPlainTextEdit("CLI mode, type 'exit' to return, or 'help'\n\n")
-        self.cliTextEdit.setStyleSheet("QPlainTextEdit {background-color:gray; color:white; min-height:590; max-height:600}")
+        self.cliTextEdit.setStyleSheet("QPlainTextEdit {background-color:gray; color:white; min-height:590; max-height:800}")
         self.cliInputLine = QLineEdit()
         self.cliInputLine.installEventFilter(self)
         self.cliInputLine.returnPressed.connect(self.newInputReceived)
 
         self.layout.addWidget(self.cliTextEdit)
         self.layout.addWidget(self.cliInputLine)
-        self.layout.addStretch(1)
+        # self.layout.addStretch(1)
 
         # Set Main Layout of this page
         self.setLayout(self.layout)
