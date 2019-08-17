@@ -66,9 +66,11 @@ from QuadStates import QuadStates
 
 class App(QMainWindow):
     resized = pyqtSignal()
-    def __init__(self):
+    def __init__(self, width=1080, height=720):
         super().__init__()
         self.connectionStatus = False
+        self.width = width
+        self.height = height
         self.initUI()
         # self.initSignalsSlots()
         self.qsObj = None
@@ -81,8 +83,8 @@ class App(QMainWindow):
         self.title = 'AutonomousFlight Configurator v0.0'
         self.left = 0
         self.top = 0
-        self.width = 1080
-        self.height = 720
+        # self.width = 1080
+        # self.height = 720
         self.toolbarheight = 65
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
