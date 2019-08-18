@@ -166,7 +166,10 @@ class OverviewInfoWidget(QWidget):
                              "HDOP",
                              "EPH",
                              "EPV",
-                             "Update Frequency"]
+                             "Update Frequency",
+                             "Total Messages",
+                             "Errors",
+                             "Timeouts"]
         self.gpsInfoLabelDict = {}
         for field in self.gpsFieldList:
             self.gpsInfoLabelDict[field] = QLabel(field)
@@ -186,7 +189,7 @@ class OverviewInfoWidget(QWidget):
         self.step = {}
         self.step['attitude'] = 0.01
         self.step['arming flag'] = 0.01
-        self.step['battery'] = 0.01
+        self.step['battery'] = 0.1
         self.step['communication'] = 0.1
         self.step['gps'] = 0.1
 
@@ -301,5 +304,13 @@ class OverviewInfoWidget(QWidget):
             elif field == "EPV":
                 data = str(float(self.qsObj.msp_gpsstatistics['gps_epv'])/100.0) + " m"
             elif field == "Update Frequency":
-                data = " Hz"
+                data = str(1000.0/float(self.qsObj.msp_gpsstatistics['gps_last_message_dt'])) + " Hz"
+            elif field == "Total Messages":
+                data = str(self.qsObj.msp_gpsstatistics['gps_packet_count'])
+            elif field == "Errors":
+                data = str(self.qsObj.msp_gpsstatistics['gps_errors'])
+            elif field == "Timeouts":
+                data = str(self.qsObj.msp_gpsstatistics['gps_timeouts'])
+            else:
+                pass
             self.gpsInfoLabelDict[field].setText(field + ": " + data)
