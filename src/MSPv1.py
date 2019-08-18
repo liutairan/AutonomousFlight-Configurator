@@ -1482,6 +1482,7 @@ class MSPv1(QObject):
             elif ind == 4:
                 # gps
                 self.readFromFC(0, MSPv1.MSP_RAW_GPS, [])
+                self.readFromFC(0, MSPv1.MSP_GPSSTATISTICS, [])
             # emit signal to MainWindow then update labels in OverviewPage.
             self.overviewDataUpdateSignal.emit(ind)
         except serial.serialutil.SerialException:
@@ -1508,7 +1509,7 @@ class MSPv1(QObject):
         except serial.serialutil.SerialException:
             print("Serial Exception")
         except Exception:
-            print("Process Overview Check")
+            print("Process Motor Check")
             print(Exception)
             pass
 
