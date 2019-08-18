@@ -161,7 +161,12 @@ class OverviewInfoWidget(QWidget):
                              "Sats",
                              "Latitude",
                              "Longitude",
-                             "Altitude"]
+                             "Altitude",
+                             "Speed",
+                             "HDOP",
+                             "EPH",
+                             "EPV",
+                             "Update Frequency"]
         self.gpsInfoLabelDict = {}
         for field in self.gpsFieldList:
             self.gpsInfoLabelDict[field] = QLabel(field)
@@ -232,30 +237,11 @@ class OverviewInfoWidget(QWidget):
         self.sched['communication'].stop()
         self.sched['gps'].stop()
 
-    # # Use APS
-    # def start(self):
-    #     if self.running == False:
-    #         self.running = True
-    #         self.sched = BackgroundScheduler()
-    #         self.sched.start()
-    #         self.sched.add_job(self.overviewInfoRequest, 'interval', seconds = 0.1)
-    #
-    # # Use APS
-    # def stop(self):
-    #     if self.running == True:
-    #         self.sched.shutdown(wait=False)
-    #         self.sched = None
-    #         self.running = False
-    #
-    # # Use APS
-    # def overviewInfoRequest(self):
-    #     self.overviewInfoSignal.emit()
-
     # Update attitude labels
     def updateAttitudeLabels(self):
-        self.attitudeLabelList[0].setText("Heading: " + str(self.qsObj.msp_attitude['heading']))
-        self.attitudeLabelList[1].setText("Pitch: " + str(self.qsObj.msp_attitude['angy']))
-        self.attitudeLabelList[2].setText("Roll: " + str(self.qsObj.msp_attitude['angx']))
+        self.attitudeLabelList[0].setText("Heading: " + str(self.qsObj.msp_attitude['heading']) + " deg")
+        self.attitudeLabelList[1].setText("Pitch: " + str(self.qsObj.msp_attitude['angy']) + " deg")
+        self.attitudeLabelList[2].setText("Roll: " + str(self.qsObj.msp_attitude['angx']) + " deg")
 
     # Update arming flag labels
     def updateArmingFlagLabels(self):
@@ -306,4 +292,14 @@ class OverviewInfoWidget(QWidget):
                 data = str(float(self.qsObj.msp_raw_gps['gps_lon'])/10000000.0) + " deg"
             elif field == "Altitude":
                 data = str(self.qsObj.msp_raw_gps['gps_altitude']) + " m"
+            elif field == "Speed":
+                data = str(self.qsObj.msp_raw_gps['gps_speed']) + " cm/s"
+            elif field == "HDOP":
+                data = str(0.00)
+            elif field == "EPH":
+                data = " m"
+            elif field == "EPV":
+                data = " m"
+            elif field == "Update Frequency":
+                data = " Hz"
             self.gpsInfoLabelDict[field].setText(field + ": " + data)
