@@ -1,6 +1,6 @@
 # AutonomousFlight-Configurator  
 
-Project finished. It will be uploaded after fully tested.
+Project finished. It has been tested for a while, but it is still a beta version. Minor changes will be updated. Please raise an issue if you get a problem.
 
 # Sample:  
 Screenshots:   
