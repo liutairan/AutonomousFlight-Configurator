@@ -295,11 +295,11 @@ class OverviewInfoWidget(QWidget):
             elif field == "Speed":
                 data = str(self.qsObj.msp_raw_gps['gps_speed']) + " cm/s"
             elif field == "HDOP":
-                data = str(0.00)
+                data = str(float(self.qsObj.msp_gpsstatistics['gps_hdop'])/100.0)
             elif field == "EPH":
-                data = " m"
+                data = str(float(self.qsObj.msp_gpsstatistics['gps_eph'])/100.0) + " m"
             elif field == "EPV":
-                data = " m"
+                data = str(float(self.qsObj.msp_gpsstatistics['gps_epv'])/100.0) + " m"
             elif field == "Update Frequency":
                 data = " Hz"
             self.gpsInfoLabelDict[field].setText(field + ": " + data)
