@@ -369,6 +369,8 @@ class App(QMainWindow):
             self.tabObjectDict["Sensor"].updateMAGPlot()
         elif ind == 1:
             self.tabObjectDict["Sensor"].updateBAROPlot()
+        elif ind == 2:
+            self.tabObjectDict["Sensor"].updateRangeFinderPlot()
 
     def motorPageUpdate(self, ind):
         if ind == 0:
