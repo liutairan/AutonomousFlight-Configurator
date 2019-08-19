@@ -33,6 +33,7 @@ import math
 import re
 import subprocess
 import threading
+from functools import partial
 from random import *
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
     QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QAction,
@@ -41,18 +42,21 @@ from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
     QCompleter, QSizePolicy, QComboBox, QMessageBox, QDialog, QDialogButtonBox,
     QFileDialog, QGridLayout, QFormLayout, QSlider, QScrollArea, QGroupBox)
 from PyQt5.QtGui import QPixmap, QFont
-from PyQt5.QtCore import pyqtSlot, pyqtSignal, Qt
+from PyQt5.QtCore import pyqtSlot, pyqtSignal, QTimer, Qt
 
 from QRangeSlider import QRangeSlider
 
 class FlightModeWidget(QWidget):
     flightmodeSaveSignal = pyqtSignal(list)
+    modeRCDataRequestSignal = pyqtSignal(int)
     def __init__(self, parent, qsObj):
         super(QWidget, self).__init__(parent)
         self.qsObj = qsObj
         self.initUI()
         self.running = False
         self.modeGroups = []
+        self.initVariables()
+        self.setUpdateTimer()
 
     def initUI(self):
         self.bundle_dir = os.path.dirname(os.path.abspath(__file__))
@@ -175,3 +179,34 @@ class FlightModeWidget(QWidget):
                 saveFlightModeList.append([boxId, channel, self.sliderList[i].start(), self.sliderList[i].end()])
                 # print(self.flightmodeList[i])
         self.flightmodeSaveSignal.emit(saveFlightModeList)
+
+    # Use QTimer
+    def initVariables(self):
+        self.step = {}
+        self.step['mode'] = 0.5
+
+    # Use QTimer
+    def setUpdateTimer(self):
+        ## Start a timer to rapidly update the plot
+        self.sched = {}
+
+        self.sched['mode'] = QTimer()
+        self.sched['mode'].timeout.connect(partial(self.dataRequest, 0))
+
+    # Use QTimer
+    def dataRequest(self, ind):
+        # ind is the index of fields to be updated,
+        #    ind = 0, 1, 2, 3, 4
+        #    ind = 0: mode
+        self.modeRCDataRequestSignal.emit(ind)
+
+    # Use QTimer, start all the timers.
+    def start(self):
+        self.sched['mode'].start(int(1.0/self.step['mode']))
+
+    # Use QTimer, stop all the timers.
+    def stop(self):
+        self.sched['mode'].stop()
+
+    def updateCurrentValueLabels(self):
+        print(self.qsObj.msp_rc)
