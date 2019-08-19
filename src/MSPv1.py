@@ -270,6 +270,7 @@ class MSPv1(QObject):
     sensorDataUpdateSignal = pyqtSignal(int)
     motorDataUpdateSignal = pyqtSignal(int)
     headerDataUpdateSignal = pyqtSignal(int)
+    modeRCDataUpdateSignal = pyqtSignal(int)
     rebootSignal = pyqtSignal()
     serTerFeedbackSignal = pyqtSignal(str)
 
@@ -1523,6 +1524,18 @@ class MSPv1(QObject):
         elif ind == 1:
             self.readFromFC(0, MSPv1.MSP_SENSOR_STATUS, [])
         self.headerDataUpdateSignal.emit(ind)
+
+    def processModeRCDataRequest(self, ind):
+        try:
+            if ind == 0:
+                self.readFromFC(0, MSPv1.MSP_RC, [])
+            self.modeRCDataUpdateSignal.emit(ind)
+        except serial.serialutil.SerialException:
+            print("Serial Exception")
+        except Exception:
+            print("Process RC Value Check")
+            print(Exception)
+            pass
 
     def processFeature(self):
         try:
