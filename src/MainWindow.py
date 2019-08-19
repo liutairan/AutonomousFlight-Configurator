@@ -186,6 +186,7 @@ class App(QMainWindow):
             self.tabObjectDict["Calibration"].calibrationSaveSignal.connect(self.mspHandle.processCalibrationSave)
             self.tabObjectDict["Sensor"].sensorDataRequestSignal.connect(self.mspHandle.processSensorDataRequest)
             self.tabObjectDict["Motor"].motorDataRequestSignal.connect(self.mspHandle.processMotorDataRequest)
+            self.tabObjectDict["Mode"].modeRCDataRequestSignal.connect(self.mspHandle.processModeRCDataRequest)
             self.tabObjectDict["Topology"].topologySaveSignal.connect(self.mspHandle.processTopologySave)
             self.tabObjectDict["SerialTerminal"].serTerSignal.connect(self.mspHandle.processSerialTerminalRequest)
 
@@ -196,6 +197,7 @@ class App(QMainWindow):
             self.mspHandle.overviewDataUpdateSignal.connect(self.overviewPageUpdate)
             self.mspHandle.sensorDataUpdateSignal.connect(self.sensorPageUpdate)
             self.mspHandle.motorDataUpdateSignal.connect(self.motorPageUpdate)
+            self.mspHandle.modeRCDataUpdateSignal.connect(self.flightmodePageRCUpdate)
             self.mspHandle.serTerFeedbackSignal.connect(self.tabObjectDict["SerialTerminal"].processFeedback)
 
             # Change UI
@@ -273,9 +275,13 @@ class App(QMainWindow):
             if index == self.tabNameList.index("Calibration"):
                 # Calibration
                 self.calibrationPageUpdate()
+            # Mode
             if index == self.tabNameList.index("Mode"):
-                # Mode
                 self.flightmodePageUpdate()
+                self.tabObjectDict["Mode"].start()
+            elif self.currentTabMode == self.tabNameList.index("Mode"):
+                self.tabObjectDict["Mode"].stop()
+            # Configure
             if index == self.tabNameList.index("Configure"):
                 # Configure
                 self.configurePageUpdate()
@@ -292,6 +298,7 @@ class App(QMainWindow):
                 self.tabObjectDict["Motor"].start()
             elif self.currentTabMode == self.tabNameList.index("Motor"):
                 self.tabObjectDict["Motor"].stop()
+            # Topology
             if index == self.tabNameList.index("Topology"):
                 # Topology
                 self.topologyPageUpdate()
@@ -375,6 +382,10 @@ class App(QMainWindow):
     def motorPageUpdate(self, ind):
         if ind == 0:
             self.tabObjectDict["Motor"].updateMotorValues()
+
+    def flightmodePageRCUpdate(self, ind):
+        if ind == 0:
+            self.tabObjectDict["Mode"].updateCurrentValueLabels()
 
     def flightmodePageUpdate(self):
         self.tabObjectDict["Mode"].setRanges()
