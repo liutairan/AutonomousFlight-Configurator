@@ -1497,6 +1497,8 @@ class MSPv1(QObject):
             self.readFromFC(0, MSPv1.MSP_RAW_IMU, [])
         elif ind == 1:
             self.readFromFC(0, MSPv1.MSP_ALTITUDE, [])
+        elif ind == 2:
+            self.readFromFC(0, MSPv1.MSP_SONAR_ALTITUDE, [])
         self.sensorDataUpdateSignal.emit(ind)
 
     def processMotorDataRequest(self, ind):
