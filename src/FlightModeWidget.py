@@ -90,6 +90,7 @@ class FlightModeWidget(QWidget):
         self.flightmodeList = self.qsObj.msp_boxnames
         self.sliderList = []
         self.comboBoxList = []
+        self.currentValueList = []
         self.currentValueLabelList = []
         self.createSliders()
 
@@ -115,7 +116,8 @@ class FlightModeWidget(QWidget):
             channelList = ["OFF"] + ["Ch. "+str(x) for x in range(5,15)]
             self.comboBoxList[i].addItems(channelList)
             self.comboBoxList[i].currentIndexChanged.connect(self.comboBoxValueChanged)
-            self.currentValueLabelList.append(QLabel("900"))
+            self.currentValueList.append(900)
+            self.currentValueLabelList.append(QLabel(str(self.currentValueList[i])))
             self.scrollAreaLayout.addWidget(label, i, 0)
             self.scrollAreaLayout.addWidget(self.comboBoxList[i], i, 1)
             self.scrollAreaLayout.addWidget(self.currentValueLabelList[i], i, 2)
@@ -183,7 +185,7 @@ class FlightModeWidget(QWidget):
     # Use QTimer
     def initVariables(self):
         self.step = {}
-        self.step['mode'] = 0.5
+        self.step['mode'] = 1
 
     # Use QTimer
     def setUpdateTimer(self):
@@ -209,4 +211,11 @@ class FlightModeWidget(QWidget):
         self.sched['mode'].stop()
 
     def updateCurrentValueLabels(self):
-        print(self.qsObj.msp_rc)
+        for i in range(len(self.flightmodeList)):
+            if self.comboBoxList[i].currentIndex() == 0:
+                self.currentValueList[i] = 900
+            elif self.comboBoxList[i].currentIndex() > 0:
+                tempChannelInd = self.comboBoxList[i].currentIndex() + 3
+                tempChannelValue = self.qsObj.msp_rc[tempChannelInd]
+                self.currentValueList[i] = tempChannelValue
+            self.currentValueLabelList[i].setText(str(self.currentValueList[i]))
