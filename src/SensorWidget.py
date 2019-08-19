@@ -190,6 +190,22 @@ class SensorWidget(QWidget):
         self.panelLayout['baro'].addLayout(self.labelLayout['baro'])
         mainPlotPageLayout.addLayout(self.panelLayout['baro'])
 
+        self.figure['sonar'] = plt.figure()
+        self.canvas['sonar'] = FigureCanvas(self.figure['sonar'])
+        self.canvas['sonar'].setStyleSheet("QWidget {min-height:200; min-width:900; max-width:900}")
+        self.label['sonar-title'] = QLabel("Range Finder - cm")
+        self.label['height'] = QLabel("Height")
+        self.label['height-value'] = QLabel("0")
+        self.label['height-value'].setStyleSheet("QLabel {color:blue}")
+        self.labelLayout['sonar'] = QGridLayout()
+        self.labelLayout['sonar'].addWidget(self.label['sonar-title'], 0, 0, 1, 2)
+        self.labelLayout['sonar'].addWidget(self.label['height'], 1, 0, 1, 1)
+        self.labelLayout['sonar'].addWidget(self.label['height-value'], 1, 1, 1, 1)
+        self.panelLayout['sonar'] = QHBoxLayout()
+        self.panelLayout['sonar'].addWidget(self.canvas['sonar'])
+        self.panelLayout['sonar'].addLayout(self.labelLayout['sonar'])
+        mainPlotPageLayout.addLayout(self.panelLayout['sonar'])
+
         mainPlotPageLayout.addStretch(1)
 
         self.setLayout(self.layout)
@@ -199,22 +215,31 @@ class SensorWidget(QWidget):
         self.rtime = {}
         self.data = {}
         self.step = {}
-        self.step['acc'] = 0.01
-        self.step['gyro'] = 0.01
-        self.step['mag'] = 0.01
+        self.step['acc'] = 0.05
+        self.step['gyro'] = 0.05
+        self.step['mag'] = 0.05
         self.step['baro'] = 0.1
+        self.step['sonar'] = 0.1
+        # Acc
         self.time['acc'] = np.arange(0, 2, self.step['acc'])
         self.rtime['acc'] = 2
         self.data['acc'] = np.zeros((int(2.0/self.step['acc']),3))
+        # Gyro
         self.time['gyro'] = np.arange(0, 2, self.step['gyro'])
         self.rtime['gyro'] = 2
         self.data['gyro'] = np.zeros((int(2.0/self.step['gyro']),3))
+        # Mag
         self.time['mag'] = np.arange(0, 2, self.step['mag'])
         self.rtime['mag'] = 2
         self.data['mag'] = np.zeros((int(2.0/self.step['mag']),3))
+        # Baro
         self.time['baro'] = np.arange(0, 2, self.step['baro'])
         self.rtime['baro'] = 2
         self.data['baro'] = np.zeros((int(2.0/self.step['baro']),2))
+        # Sonar
+        self.time['sonar'] = np.arange(0, 2, self.step['sonar'])
+        self.rtime['sonar'] = 2
+        self.data['sonar'] = np.zeros((int(2.0/self.step['sonar']),1))
 
     def rand(self, field, step):
         randData = np.random.random(1)
@@ -315,11 +340,34 @@ class SensorWidget(QWidget):
         self.label['alt-value'].setText(str(yn[0][0]))
         self.label['baro-value'].setText(str(yn[0][1]))
 
+    def updateRangeFinderPlot(self):
+        self.rtime['sonar'] = self.rtime['sonar'] + self.step['sonar']
+        yn = np.array([[self.qsObj.msp_sonar_altitude['sonar_altitude']]])
+        self.time['sonar'] = np.append(self.time['sonar'], self.rtime['sonar'])
+        self.data['sonar'] = np.append(self.data['sonar'], yn, axis=0)
+        tbpy = self.data['sonar'][-int(2.0/self.step['sonar']):]
+        tbpx = self.time['sonar'][-int(2.0/self.step['sonar']):]
+
+        self.figure['sonar'].clear()
+
+        # create an axis
+        ax1 = self.figure['sonar'].add_subplot(111)
+        # plot data
+        ax1.plot(tbpx, tbpy, '-')
+        # ax1.set_ylim(-50000,50000)
+        ax1.grid()
+        self.figure['sonar'].tight_layout()
+        # refresh canvas
+        self.canvas['sonar'].draw()
+        self.label['height-value'].setText(str(yn[0][0]))
+
     def dataRequest(self, ind):
         if ind == 0:
             self.sensorDataRequestSignal.emit(0)
         elif ind == 1:
             self.sensorDataRequestSignal.emit(1)
+        elif ind == 2:
+            self.sensorDataRequestSignal.emit(2)
 
     def setUpdateTimer(self):
         ## Start a timer to rapidly update the plot
@@ -330,17 +378,22 @@ class SensorWidget(QWidget):
         self.sched['baro'] = QTimer()
         self.sched['baro'].timeout.connect(partial(self.dataRequest, 1))
 
+        self.sched['sonar'] = QTimer()
+        self.sched['sonar'].timeout.connect(partial(self.dataRequest, 2))
+
         # self.sched['gyro'] = QTimer()
         # self.sched['gyro'].timeout.connect(partial(self.dataRequest, 1))
 
     def start(self):
         self.sched['acc'].start(int(1.0/self.step['acc']))
         self.sched['baro'].start(int(1.0/self.step['baro']))
+        self.sched['sonar'].start(int(1.0/self.step['sonar']))
         # self.sched['gyro'].start(int(1.0/self.step['gyro']))
 
     def stop(self):
         self.sched['acc'].stop()
         self.sched['baro'].stop()
+        self.sched['sonar'].stop()
         # self.sched['gyro'].stop()
 
 if __name__ == "__main__":
