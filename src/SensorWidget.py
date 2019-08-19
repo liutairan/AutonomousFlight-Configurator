@@ -309,7 +309,7 @@ class SensorWidget(QWidget):
         ax1 = self.figure['mag'].add_subplot(111)
         # plot data
         ax1.plot(tbpx, tbpy, '-')
-        ax1.set_ylim(-500,500)
+        ax1.set_ylim(-2000,2000)
         ax1.grid()
         self.figure['mag'].tight_layout()
         # refresh canvas
