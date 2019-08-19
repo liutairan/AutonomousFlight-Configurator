@@ -86,6 +86,7 @@ class FlightModeWidget(QWidget):
         self.flightmodeList = self.qsObj.msp_boxnames
         self.sliderList = []
         self.comboBoxList = []
+        self.currentValueLabelList = []
         self.createSliders()
 
         # spacer = QWidget()
@@ -105,14 +106,16 @@ class FlightModeWidget(QWidget):
             self.sliderList[i].startValueChanged.connect(self.startvaluechange)
             self.sliderList[i].endValueChanged.connect(self.endvaluechange)
             label = QLabel(self.flightmodeList[i])
-            label.setFont(QFont("Times", 25, QFont.Bold))
+            label.setFont(QFont("Times", 22, QFont.Bold))
             self.comboBoxList.append(QComboBox())
             channelList = ["OFF"] + ["Ch. "+str(x) for x in range(5,15)]
             self.comboBoxList[i].addItems(channelList)
             self.comboBoxList[i].currentIndexChanged.connect(self.comboBoxValueChanged)
+            self.currentValueLabelList.append(QLabel("900"))
             self.scrollAreaLayout.addWidget(label, i, 0)
             self.scrollAreaLayout.addWidget(self.comboBoxList[i], i, 1)
-            self.scrollAreaLayout.addWidget(self.sliderList[i], i, 2)
+            self.scrollAreaLayout.addWidget(self.currentValueLabelList[i], i, 2)
+            self.scrollAreaLayout.addWidget(self.sliderList[i], i, 3)
 
     def startvaluechange(self, value):
         pass
