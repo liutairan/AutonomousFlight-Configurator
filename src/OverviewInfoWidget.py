@@ -34,7 +34,6 @@ import re
 import subprocess
 import threading
 from functools import partial
-# from apscheduler.schedulers.background import BackgroundScheduler
 from random import *
 from PyQt5.QtWidgets import (QMainWindow, QApplication, QPushButton,
     QListWidget, QListWidgetItem, QAbstractItemView, QWidget, QAction,
