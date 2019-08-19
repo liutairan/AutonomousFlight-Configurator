@@ -304,7 +304,10 @@ class OverviewInfoWidget(QWidget):
             elif field == "EPV":
                 data = str(float(self.qsObj.msp_gpsstatistics['gps_epv'])/100.0) + " m"
             elif field == "Update Frequency":
-                data = str("{:3.1f}".format(1000.0/float(self.qsObj.msp_gpsstatistics['gps_last_message_dt']))) + " Hz"
+                if self.qsObj.msp_gpsstatistics['gps_last_message_dt'] > 0:
+                    data = str("{:3.1f}".format(1000.0/float(self.qsObj.msp_gpsstatistics['gps_last_message_dt']))) + " Hz"
+                else:
+                    data = "0.0 Hz"
             elif field == "Total Messages":
                 data = str(self.qsObj.msp_gpsstatistics['gps_packet_count'])
             elif field == "Errors":
