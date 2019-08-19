@@ -964,7 +964,6 @@ class MSPv1(QObject):
             elif rec_cmd == MSPv1.MSP_RC:
                 temp = struct.unpack('<'+'h'*int(data_length/2), data)
                 self.qsObj.msp_rc = list(temp)
-                print(self.qsObj.msp_rc)
             elif rec_cmd == MSPv1.MSP_ATTITUDE:
                 temp = struct.unpack('<3h',data)
                 self.qsObj.msp_attitude['angx'] = float(temp[0]/10.0)
