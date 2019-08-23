@@ -13,7 +13,7 @@
     },
     "Topology": {
         "Address Head": "0013A200",
-        "Address Options": ["00000000", "40C14304", "40C14306", "40C1430B"],
+        "Address Options": ["00000000", "40C14304", "40C14306", "40C1430B", "40C1426D", "40C1430F", "4163DA95","4163D67D", "4184D0E9", "4184B35E"],
         "Current Telemetry Address": 0,
         "Telemetry Source Type Options": ["Single", "Double", "Multiple"],
         "Telemetry Source Type": 0,
