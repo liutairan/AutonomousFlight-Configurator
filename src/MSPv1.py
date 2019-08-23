@@ -836,6 +836,7 @@ class MSPv1(QObject):
 
     # Using, Checked
     def preCheckPacket(self, packet):
+        # print(struct.unpack('<%dB' % len(packet), packet))
         if len(packet)>5:
             if packet[0:3] == b'$M>':
                 packet_length = len(packet)
