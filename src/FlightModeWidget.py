@@ -211,6 +211,7 @@ class FlightModeWidget(QWidget):
         self.sched['mode'].stop()
 
     def updateCurrentValueLabels(self):
+        pass
         for i in range(len(self.flightmodeList)):
             if self.comboBoxList[i].currentIndex() == 0:
                 self.currentValueList[i] = 900
@@ -219,10 +220,11 @@ class FlightModeWidget(QWidget):
                 tempChannelValue = self.qsObj.msp_rc[tempChannelInd]
                 self.currentValueList[i] = tempChannelValue
                 settings = self.getRange(self.flightmodeList[i])
-                bandLowValue = settings[2]*25+900
-                bandHighValue = settings[3]*25+900
-                if tempChannelValue >= bandLowValue and tempChannelValue <= bandHighValue:
-                    self.currentValueLabelList[i].setStyleSheet("QLabel {color:green}")
-                else:
-                    self.currentValueLabelList[i].setStyleSheet("QLabel {color:grey}")
+                if len(settings) == 4:
+                    bandLowValue = settings[2]*25+900
+                    bandHighValue = settings[3]*25+900
+                    if tempChannelValue >= bandLowValue and tempChannelValue <= bandHighValue:
+                        self.currentValueLabelList[i].setStyleSheet("QLabel {color:green}")
+                    else:
+                        self.currentValueLabelList[i].setStyleSheet("QLabel {color:grey}")
             self.currentValueLabelList[i].setText(str(self.currentValueList[i]))
