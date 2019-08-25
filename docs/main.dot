@@ -10,6 +10,7 @@ digraph G {
       MainWindow_setTabMode;
       MainWindow_overviewPageUpdate;
       MainWindow_sensorPageUpdate;
+      MainWindow_motorPageUpdate
       color = blue;
       label = "MainWindow";
     }
@@ -44,6 +45,7 @@ digraph G {
       MSPv1_processCalibrationSave -> MSPv1_saveToEEPROM;
       MSPv1_processCalibrationSave -> MSPv1_reboot;
       MSPv1_processSensorDataRequest -> MSPv1_sensorDataUpdateSignal;
+      MSPv1_processMotorDataRequest -> MSPv1_motorDataUpdateSignal;
       MSPv1_processTopologySave;
       MSPv1_cliFeedbackSignal;
       MSPv1_calibrationFeedbackSignal;
@@ -142,19 +144,29 @@ digraph G {
     }
 
     subgraph cluster12 {
+      MotorInfoWidget_init -> MotorInfoWidget_setUpdateTimer;
+      MotorInfoWidget_setUpdateTimer -> MotorInfoWidget_QTimer;
+      MotorInfoWidget_QTimer -> MotorInfoWidget_dataRequest;
+      MotorInfoWidget_dataRequest -> MotorInfoWidget_motorDataRequestSignal;
+      MotorInfoWidget_updateMotorValues;
+      color = blue;
+      label = "MotorInfoWidget";
+    }
+
+    subgraph cluster13 {
       TopologyWidget_init;
       TopologyWidget_topologySaveSignal;
       color = blue;
       label = "TopologyWidget";
     }
 
-    subgraph cluster13 {
+    subgraph cluster14 {
       BlackboxWidget_init;
       color = blue;
       label = "BlackboxWidget";
     }
 
-    subgraph cluster14 {
+    subgraph cluster15 {
       SerialTerminalWidget_init;
       color = blue;
       label = "SerialTerminalWidget";
@@ -175,6 +187,7 @@ digraph G {
     MainWindow_initWorkingWidget -> ParameterSettingWidget_init;
     MainWindow_initWorkingWidget -> FlightModeWidget_init;
     MainWindow_initWorkingWidget -> SensorWidget_init;
+    MainWindow_initWorkingWidget -> MotorInfoWidget_init;
     MainWindow_initWorkingWidget -> TopologyWidget_init;
     MainWindow_initWorkingWidget -> BlackboxWidget_init;
     MainWindow_initWorkingWidget -> SerialTerminalWidget_init;
@@ -186,6 +199,7 @@ digraph G {
     CalibrationWidget_magCalibrationSignal -> MSPv1_processMagCalibrationRequest;
     CalibrationWidget_calibrationSaveSignal -> MSPv1_processCalibrationSave;
     SensorWidget_sensorDataRequestSignal -> MSPv1_processSensorDataRequest;
+    MotorInfoWidget_motorDataRequestSignal -> MSPv1_processMotorDataRequest;
     TopologyWidget_topologySaveSignal -> MSPv1_processTopologySave;
     MSPv1_cliFeedbackSignal -> CLIWidget_processFeedback;
     MSPv1_calibrationFeedbackSignal -> CalibrationWidget_processFeedback;
@@ -201,5 +215,7 @@ digraph G {
     MainWindow_sensorPageUpdate -> SensorWidget_updateMAGPlot;
     MainWindow_sensorPageUpdate -> SensorWidget_updateBAROPlot;
     OverviewInfoWidget_overviewInfoSignal -> MSPv1_overviewInfoResponse;
+    MSPv1_motorDataUpdateSignal -> MainWindow_motorPageUpdate;
+    MainWindow_motorPageUpdate -> MotorInfoWidget_updateMotorValues;
     # Save
 }
