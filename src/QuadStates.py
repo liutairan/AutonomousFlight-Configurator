@@ -44,7 +44,7 @@ class QuadStates:
         self.parsed_activeboxes = []
         self.msp_motor = {'1':0,'2':0,'3':0,'4':0,'5':0,'6':0,'7':0,'8':0}
         self.msp_3d = {'deadband3d_low':0, 'deadband3d_high':0, 'neutral3d':0}
-        self.msp_rc = []
+        self.msp_rc = [0,0,0,0,0,0,0,0]
         self.msp_boxnames = []
         self.msp_boxids = []
         self.msp_mode_ranges = []
