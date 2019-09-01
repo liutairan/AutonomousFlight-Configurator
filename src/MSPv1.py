@@ -1517,13 +1517,20 @@ class MSPv1(QObject):
             pass
 
     def processHeaderDataRequest(self, ind):
-        if ind == 0:
-            self.readFromFC(0, MSPv1.MSP_STATUS_EX, [])
-            # self.parseArmingFlags()
-            self.parseActiveFlightModeFlags()
-        elif ind == 1:
-            self.readFromFC(0, MSPv1.MSP_SENSOR_STATUS, [])
-        self.headerDataUpdateSignal.emit(ind)
+        try:
+            if ind == 0:
+                self.readFromFC(0, MSPv1.MSP_STATUS_EX, [])
+                # self.parseArmingFlags()
+                self.parseActiveFlightModeFlags()
+            elif ind == 1:
+                self.readFromFC(0, MSPv1.MSP_SENSOR_STATUS, [])
+            self.headerDataUpdateSignal.emit(ind)
+        except serial.serialutil.SerialException:
+            print("Serial Exception")
+        except Exception:
+            print("Process Header Check")
+            print(Exception)
+            pass
 
     def processModeRCDataRequest(self, ind):
         try:
