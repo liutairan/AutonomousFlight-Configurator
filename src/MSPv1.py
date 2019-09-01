@@ -1494,13 +1494,20 @@ class MSPv1(QObject):
             pass
 
     def processSensorDataRequest(self, ind):
-        if ind == 0:
-            self.readFromFC(0, MSPv1.MSP_RAW_IMU, [])
-        elif ind == 1:
-            self.readFromFC(0, MSPv1.MSP_ALTITUDE, [])
-        elif ind == 2:
-            self.readFromFC(0, MSPv1.MSP_SONAR_ALTITUDE, [])
-        self.sensorDataUpdateSignal.emit(ind)
+        try:
+            if ind == 0:
+                self.readFromFC(0, MSPv1.MSP_RAW_IMU, [])
+            elif ind == 1:
+                self.readFromFC(0, MSPv1.MSP_ALTITUDE, [])
+            elif ind == 2:
+                self.readFromFC(0, MSPv1.MSP_SONAR_ALTITUDE, [])
+            self.sensorDataUpdateSignal.emit(ind)
+        except serial.serialutil.SerialException:
+            print("Serial Exception")
+        except Exception:
+            print("Process Sensor Check")
+            print(Exception)
+            pass
 
     def processMotorDataRequest(self, ind):
         try:
