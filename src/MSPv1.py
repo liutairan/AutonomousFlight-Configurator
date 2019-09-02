@@ -1398,26 +1398,26 @@ class MSPv1(QObject):
     def cliCommandSwitch(self, expr):
         # print(expr)
         if expr == "dump":
-            self.processDump()
+            self.processCLIDump()
             #self.readFromFC(0, MSPv1.MSP_STATUS_EX, [])
             # tempPacket = self.constructSendPacket(0, MSPv1.MSP_STATUS_EX, [])
             # self.sendPacket(tempPacket)
             # tempRecPacket = self.readPacket2()
             # self.parseReceivedPacket(tempRecPacket)
         elif expr == "diff":
-            self.processDiff()
+            self.processCLIDiff()
         elif expr == "save":
-            pass
+            self.processCLISave()
         elif expr == "help":
-            self.processHelp()
+            self.processCLIHelp()
         elif expr == "um":
             self.processUploadMissions()
         elif expr == "dm":
             self.processDownloadMissions()
         elif expr == "exit":
-            pass
+            self.processCLIExit()
         elif expr == "feature":
-            self.processFeature()
+            self.processCLIFeature()
         else:
             pass
 
@@ -1551,7 +1551,7 @@ class MSPv1(QObject):
             print(Exception)
             pass
 
-    def processFeature(self):
+    def processCLIFeature(self):
         try:
             self.readFromFC(0, MSPv1.MSP_FEATURE, [])
         except Exception:
@@ -2065,7 +2065,7 @@ class MSPv1(QObject):
         # Reboot
         self.reboot()
 
-    def processDump(self):
+    def processCLIDump(self):
         # self.readFromFC(0, MSPv1.MSP_LOOP_TIME, [])
         # self.readFromFC(0, MSPv1.MSP_PID, [])
         # self.readFromFC(0, MSPv1.MSP_PIDNAMES, [])
@@ -2118,7 +2118,7 @@ class MSPv1(QObject):
             # self.readFromFC(0, MSPv1.MSP_ACTIVEBOXES, [])
             # self.parseActiveFlightModeFlags()
             #self.readFromFC(0, MSPv1.MSP_API_VERSION, [])
-            #self.processFeature()
+            #self.processCLIFeature()
             #self.readFromFC(0, MSPv1.MSP_IDENT, [])
             #self.readFromFC(0, MSPv1.MSP_BUILD_INFO, [])
             #self.readFromFC(0, MSPv1.MSP_SENSOR_STATUS, [])
@@ -2134,7 +2134,13 @@ class MSPv1(QObject):
             print(Exception)
             pass
 
-    def processHelp(self):
+    def processCLIHelp(self):
+        pass
+
+    def processCLISave(self):
+        pass
+
+    def processCLIExit(self):
         pass
 
     def allTypeToString(self, tempData):
@@ -2162,7 +2168,7 @@ class MSPv1(QObject):
             ret_str = "".join(temp2)
             self.serTerFeedbackSignal.emit(ret_str)
 
-    def processDiff(self):
+    def processCLIDiff(self):
         # Show the difference between current settings and default settings
         pass
 
