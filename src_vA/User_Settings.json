@@ -1,0 +1,79 @@
+{
+    "PID Tuning": {
+        "Roll": {"P":40, "I":30, "D":23},
+        "Pitch": {"P":40, "I":30, "D":23},
+        "Yaw": {"P":85, "I":45, "D":0},
+        "Position Z": {"P":50, "I":0, "D":0},
+        "Velocity Z": {"P":100, "I":50, "D":10},
+        "Heading": {"P":60, "I":0, "D":0},
+        "Position XY": {"P":65, "I":120, "D":10},
+        "Velocity XY": {"P":40, "I":15, "D":100},
+        "Surface": {"P":0, "I":0, "D":0},
+        "Level": {"Strength":20, "LPF cutoff": 15, "Transition": 75},
+        "Roll rate": 200,
+        "Pitch rate": 200,
+        "Yaw rate": 200,
+        "Manual Roll rate": 100,
+        "Manual Pitch rate": 100,
+        "Manual Yaw rate": 100,
+        "MagHold rate": 90
+    },
+    "Filtering": {
+        "Gyro LPF cutoff frequency": 60,
+        "Accelerometer LPF cutoff frequency": 15,
+        "First gyro notch filter frequency": 0,
+        "First gyro notch filter cutoff frequency": 1,
+        "Second gyro notch filter frequency": 0,
+        "Second gyro notch filter cutoff frequency": 1,
+        "D-term LPF cutoff frequency": 40,
+        "Yaw LPF cutoff frequency": 30,
+        "D-term notch filter frequency": 0,
+        "D-term notch filter cutoff frequency": 1
+    },
+    "Miscellaneous": {
+        "Yaw jump prevention": 200,
+        "Yaw P limit": 300,
+        "Roll/Pitch I-term ignore rate": 200,
+        "Yaw I-term ignore rate": 50,
+        "Roll/Pitch acceleration limit": 0,
+        "Yaw acceleration limit": 10000,
+        "TPA": 0,
+        "TPA Breakpoint": 1500
+    },
+    "Basic Nav Settings": {
+        "User Control Mode": 0,
+        "User Control Mode Options": ["Attitude", "Cruise"],
+        "Max navigation speed": 300,
+        "Max cruise speed": 500,
+        "Max navigation climb rate": 500,
+        "Max ALTHOLD climb rate": 200,
+        "Multirotor max banking angle": 30,
+        "Use mid throttle for ALTHOLD": false,
+        "Hover throttle": 1500
+    },
+    "RTH and Landing Settings": {
+        "RTH Altitude Mode": 4,
+        "RTH Altitude Mode Options": ["Current", "Extra", "Fixed", "Max", "At Least"],
+        "RTH Altitude": 1000,
+        "Climb before RTH": true,
+        "Climb regardless of position sensor health": false,
+        "Tail first": false,
+        "Land after RTH": 1,
+        "Land after RTH Options": ["Never", "Always", "Only on failsafe"],
+        "Landing vertical speed": 200,
+        "Min vertical landing speed at altitude": 500,
+        "Vertical landing speed slowdown at altitude": 2000,
+        "Min RTH distance": 500,
+        "RTH abort threshold": 50000,
+        "Emergency landing speed": 500
+    },
+    "Position Estimator": {
+        "Vertical Position Baro Weight": 0.35,
+        "Vertical Position GPS Weight": 0.2,
+        "Vertical Speed GPS Weight": 0.5,
+        "Horizontal Position GPS Weight": 1,
+        "Horizontal Speed GPS Weight": 2,
+        "Min GPS sats for valid fix": 6,
+        "Use GPS data for velocity calculation": true
+    }
+}
